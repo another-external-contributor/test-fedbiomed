@@ -38,6 +38,9 @@ class NodeEnviron:
         self._values['TIMEOUT'] = 10
         self._values['DEFAULT_TRAINING_PLANS_DIR'] = f"/tmp/{node}/default_training_plans"
         self._values['TRAINING_PLANS_DIR'] = f"/tmp/{node}/registered_training_plans"
+        self._values['SECURE_AGGREGATION'] = False
+        self._values['FORCE_SECURE_AGGREGATION'] = False
+
 
         # TODO: create random directory paths like  for test_taskqueue.py
         os.makedirs(self._values['ROOT_DIR'], exist_ok=True)
@@ -57,11 +60,18 @@ class NodeEnviron:
         # values specific to node
         self._values['MESSAGES_QUEUE_DIR'] = f"/tmp/{node}/var/queue_messages_XXX"
         self._values['NODE_ID'] = f"mock_node_{node}_XXX"
+        self._values['ID'] = f"mock_node_{node}_XXX"
         self._values['DB_PATH'] = f"/tmp/{node}/var/db_node_mock_node_XXX.json"
 
         self._values['ALLOW_DEFAULT_TRAINING_PLANS'] = True
         self._values['TRAINING_PLAN_APPROVAL'] = True
         self._values['HASHING_ALGORITHM'] = 'SHA256'
+
+        self._values['MPSPDZ_IP'] = 'localhost'
+        self._values['MPSPDZ_PORT'] = 1111
+
+        self._values['MPSPDZ_CERTIFICATE_KEY'] = 'dummy/path'
+        self._values['MPSPDZ_CERTIFICATE_PEM'] = 'dummy/path'
 
     def __getitem__(self, key):
         return self._values[key]

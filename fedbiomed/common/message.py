@@ -471,7 +471,7 @@ class SecaggDeleteRequest(Message):
     secagg_id: str
     sequence: int
     element: int
-    job_id: str
+    job_id: (str, type(None))
     command: str
 
 @catch_dataclass_exception
@@ -520,7 +520,7 @@ class SecaggRequest(Message):
     secagg_id: str
     sequence: int
     element: int
-    job_id: str
+    job_id: (str, type(None))
     parties: list
     command: str
 
@@ -582,6 +582,11 @@ class TrainRequest(Message):
     training_plan_url: str
     training_plan_class: str
     command: str
+    secagg_servkey_id: (str, type(None))
+    secagg_biprime_id: (str, type(None))
+    secagg_random: (float, type(None))
+    secagg_clipping_range: (int, type(None))
+    round: int
     aggregator_args: dict
 
 

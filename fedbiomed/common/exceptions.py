@@ -138,6 +138,11 @@ class FedbiomedMetricError(FedbiomedError):
     pass
 
 
+class FedbiomedOptimizerError(FedbiomedError):
+    """
+    Exception raised when an error is encountered within `Optimizer` code.
+    """
+
 class FedbiomedTrainingPlanSecurityManagerError(FedbiomedError):
     """
     Exception specific to the TrainingPlanSecurityManager.
@@ -164,6 +169,13 @@ class FedbiomedResponsesError(FedbiomedError):
 class FedbiomedRoundError(FedbiomedError):
     """
     Exceptions specific for the node round class.
+    """
+    pass
+
+
+class FedbiomedModelError(FedbiomedError):
+    """
+    Exceptions triggered from Model class
     """
     pass
 
@@ -258,3 +270,22 @@ class FedbiomedCertificateError(FedbiomedError):
     Certificate error
     """
     pass
+
+
+class FedbiomedMPCControllerError(FedbiomedError):
+    """
+    Certificate error
+    """
+    pass
+
+
+class FedbiomedSecaggCrypterError(FedbiomedError):
+    """
+    Secure aggregation encryption error
+    """
+
+
+class FedbiomedSecureAggregationError(FedbiomedError):
+    """
+    Secure aggregation error
+    """

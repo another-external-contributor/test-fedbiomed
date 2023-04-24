@@ -196,7 +196,7 @@ class SchemeValidator(object):
         ```python
         {
           "var_name": {
-                        "rules": [ validator1, vlidator2, ...] ,
+                        "rules": [ validator1, validator2, ...] ,
                         "default": a_default_value,
                         "required": True/False
                       },
@@ -295,7 +295,7 @@ class SchemeValidator(object):
             only_required (bool): if True, only force required key. If False, update all
                            keys with default values in the scheme. Defaults to True.
 
-        Return:
+        Returns:
             (dict) a json populated with default values, returns an empty dict if something is wrong
 
         Raises:
