@@ -18,7 +18,12 @@ jobs:
       - name: Check
         run: ls -la
       - name: Install dependencies
-        run: pip install ./docs/requirements.txt
+        run: pip install -r ./docs/requirements.txt
       
       - name: Build documentation
         run: ./docs/build-git.sh build
+  
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: build # The folder the action should deploy.
