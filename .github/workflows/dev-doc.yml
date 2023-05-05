@@ -1,1 +1,22 @@
+name: Publish docs via GitHub Pages
+on:
+  push:
+    branches:
+      - develop
 
+jobs:
+  build-doc:
+    name: Deploy docs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout to repositort
+        uses: actions/checkout@v3
+      - name: Setup python
+        uses: actions/setup-python@v4
+        with:
+            python-version: '3.10' 
+      - name: Install dependencies
+        run: pip install ./docs/requirements.txt
+      
+      - name: Build documentation
+        run: ./docs/build-git.sh build
