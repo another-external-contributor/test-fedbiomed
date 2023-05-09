@@ -24,7 +24,8 @@ jobs:
       - name: Build documentation
         run: | 
             mkdir build 
-            ./docs/build-git.sh build/v1
+            echo >> "Hello world" build/test.txt
+            #./docs/build-git.sh build/v1
       
       - name: Upload Artificat
         uses: actions/upload-pages-artifact@v1
