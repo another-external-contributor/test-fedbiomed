@@ -8,6 +8,7 @@ jobs:
 
   prepare-env:
     name: Prepare build enviroment 
+    environment: github-pages
     runs-on: ubuntu-latest
     steps:
       - name: Checkout to repositort
@@ -35,6 +36,7 @@ jobs:
 
   build-doc:
     name: Deploy docs
+    needs: prepare-env
     environment: github-pages
     runs-on: ubuntu-latest
     steps:
