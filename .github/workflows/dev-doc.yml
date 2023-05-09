@@ -40,6 +40,8 @@ jobs:
     environment: github-pages
     runs-on: ubuntu-latest
     steps:
+      - name: Check directory
+        run: ls -la  
       # Build documentation 
       - name: Build documentation
         run: ./docs/build-git.sh build
