@@ -5,8 +5,6 @@ on:
       - develop
 
 jobs:
-
-
   build-doc:
     name: Deploy docs
     environment: github-pages
