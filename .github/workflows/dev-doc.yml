@@ -21,15 +21,20 @@ jobs:
       - name: Install dependencies
         run: pip install -r ./docs/requirements.txt
       
-      - name: Build documentation
-        run: | 
+      - name: Download previous artifact
+        uses: actions/download-artifact@v3
+        with: 
+          name: page-source
+        run: |
           mkdir build 
-          echo >> "Hello world" build/test.txt
+          cp page-source/* build/  
+      - name: Build documentation
+        run: ./docs/build-git.sh build
       
       - name: Upload Artificat
         uses: actions/upload-pages-artifact@v1
         with:
-            # Upload entire repository
+            name: page-source
             path: 'build'
 
  
