@@ -1,12 +1,4 @@
-# Documentation static site generator & deployment tool
-Cython==0.29.14
-black==22.10.0
-mkdocs>=1.4.0
-mkdocs-material==8.5.10
-mkdocs-jupyter==0.22.0
-ipython_genutils==0.2.0
-mkdocs-minify-plugin==0.4.1
-mkdocs-gen-files==0.4.0
-mkdocs-section-index==0.3.4
-mkdocs-literate-nav==0.5.0
-mkdocstrings-python==0.8.0
+mkdocs-material==9.1.11
+mkdocs-jupyter==0.24.1
+mkdocs-minify-plugin==0.6.4
+mkdocstrings-python==0.10.1
