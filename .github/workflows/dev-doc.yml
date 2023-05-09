@@ -9,7 +9,6 @@ jobs:
 
   build-doc:
     name: Deploy docs
-    needs: prepare-env
     environment: github-pages
     runs-on: ubuntu-latest
     steps:
