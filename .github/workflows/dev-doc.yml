@@ -5,6 +5,10 @@ on:
       - develop
 
 jobs:
+
+  create-repo:
+
+
   build-doc:
     name: Deploy docs
     environment: github-pages
@@ -12,6 +16,16 @@ jobs:
     steps:
       - name: Checkout to repositort
         uses: actions/checkout@v3
+      
+      - name: Checkout do Docs repository
+        uses: actions/checkout@v3
+
+      - name: Checkout tools repo
+        uses: actions/checkout@v3
+        with:
+          repository: fedbiomed/docs
+          ssh-key: ${{ secrets.STORE_DOCS_REPO_KEY }}
+          path: build
       - name: Setup python
         uses: actions/setup-python@v4
         with:
@@ -21,17 +35,6 @@ jobs:
       - name: Install dependencies
         run: pip install -r ./docs/requirements.txt
       
-      - name: Download previous artifact
-        uses: actions/download-artifact@v3
-        with: 
-          name: artificat
-
-      - name: Copy page source into build
-        run: |
-          mkdir build 
-          cp artificat build/  
-          ls -la ./build
-
       - name: Build documentation
         run: ./docs/build-git.sh build
       
@@ -40,7 +43,10 @@ jobs:
         with:
             name: page-source
             path: 'build'
-
+      - name: Verify
+        run: |
+          ls -la ./
+          ls -la ./build
  
   deploy:
     # Add a dependency to the build job
