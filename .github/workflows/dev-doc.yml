@@ -24,14 +24,14 @@ jobs:
       - name: Download previous artifact
         uses: actions/download-artifact@v3
         with: 
-          name: page-source
+          name: artificat
 
       - name: Copy page source into build
         run: |
           mkdir build 
-          cp page-source/* build/  
+          cp artificat build/  
           ls -la ./build
-          
+
       - name: Build documentation
         run: ./docs/build-git.sh build
       
