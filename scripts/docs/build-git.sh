@@ -5,8 +5,7 @@
 #########################################################
 
 
-BASEDIR=$(cd $(dirname $0)/.. || exit ; pwd)
-
+BASEDIR=$(cd $(dirname $0)/../.. || exit ; pwd)
 
 
 
@@ -90,10 +89,60 @@ build_with_verison_tags () {
 }
 
 
+build_single_version () {
 
-build_with_verison_tags
+  if [ ! -d "$BUILD_DIR" ]; then 
+    mkdir $BUILD_DIR
+  fi 
 
-BUILD_DIR=build
+  EXISTING_VERSIONS_IN_BUILD_DIR=$(find "$BUILD_DIR" -maxdepth 1 -type d -name 'v[0-9].[0-9]*' -printf "%f")
+  VERSIONS_GIT=$(echo "$VERSIONS" | sed ':a;N;$!ba;s/\n/ /g' )
+  BASES=( $(get_base_versions "$VERSIONS_GIT") )
+  LATEST_BASE="${BASES[-1]}"
+  LATEST_TO_BUILD=$(get_latest_of_given_base "$VERSIONS_GIT" "$LATEST_BASE")
+  echo $LATEST_BASE
+  # This is to remove latest version that is already created before pushing vX.X.number
+  ALREADY_CREATED=$(find $BUILD_DIR -maxdepth 1 -type d -name v$LATEST_BASE* -printf "%f")
+  echo $ALREADY_CREATED
+  
+  echo "### Building menu -----------------------------------------------"
+  echo $(python ./scripts/docs/menu.py) > $BUILD_DIR/menu.json
+
+
+  # Build master documentation 
+  # This is for main pages
+  $BASEDIR/scripts/docs/fedbiomed_doc.sh build --verbose -d "$BUILD_DIR_TMP"
+
+  # Redirect base URL to latest for documentation related URI path
+  FILES_TO_REDIRECT='getting-started tutorials user-guide developer'
+  for r in ${FILES_TO_REDIRECT}; do 
+      echo "Creating redirection for $r"
+      ./scripts/docs/redirect.py --source $BUILD_DIR/$r --base $BUILD_DIR
+  done
+
+
+  # Build latest version 
+  # Create a new work tree to build latest version
+  echo "Building version v$LATEST_TO_BUILD"
+  git worktree add v"$LATEST_TO_BUILD"
+  $BASEDIR/scripts/docs/fedbiomed_doc.sh build --verbose -d "$BUILD_DIR_TMP"/v"$LATEST_TO_BUILD" --config-file v"$LATEST_TO_BUILD"/mkdocs.yml
+  git worktree remove v"$LATEST_TO_BUILD"
+
+
+  rsync -av --checksum --progress $BUILD_DIR_TMP/. $BUILD_DIR --delete --exclude CNAME --exclude .nojekyll --exclude .ssh --exclude .git --exclude .github
+
+  # Creat symbolik link
+  ln -sf $BUILD_DIR/v$LATEST_TO_BUILD $BUILD_DIR/latest 
+
+  # Remove temprory files
+  rm -rf $BUILD_DIR_TMP
+}
+
+
+#build_with_verison_tags
+
+BUILD_DIR="$BASEDIR"/build
+BUILD_DIR_TMP="$BASEDIR"/build-tmp
 
 while :
   do
@@ -122,7 +171,7 @@ while :
   done
 
 
-
+build_single_version
 
 # Build documentation
-$BASEDIR/docs/scripts/fedbiomed_doc.sh build --verbose -d "$BUILD_DIR"
+# $BASEDIR/docs/scripts/fedbiomed_doc.sh build --verbose -d "$BUILD_DIR"

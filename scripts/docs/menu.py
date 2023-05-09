@@ -4,7 +4,7 @@ from mkdocs.config.base import Config
 
 # Read MkDocs yml file to extract URL information
 with open('mkdocs.yml', 'rb') as conf:
-    cfg = Config(schema=get_schema(), config_file_path='../mkdocs.yml')
+    cfg = Config(schema=get_schema(), config_file_path='../../mkdocs.yml')
     cfg.load_file(conf)
 
 navigation = cfg.get('nav')

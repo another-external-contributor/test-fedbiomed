@@ -6,7 +6,7 @@ on:
 
 jobs:
   build-doc:
-    name: Deploy docs
+    name: Build and Re-store/Upadate Documentation
     environment: github-pages
     runs-on: ubuntu-latest
     steps:
@@ -45,6 +45,7 @@ jobs:
           path: 'build'
  
   deploy:
+    name: Deploy Documentation
     # Add a dependency to the build job
     needs: build-doc
 
