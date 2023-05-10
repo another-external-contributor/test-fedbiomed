@@ -83,6 +83,10 @@ VERSION_BULD_STARTS_FROM=$(int $(echo v4.2.1 | sed 's/v//;s/\.//g' | awk '{while
 VERISONS_NOT_ALLOWED="v3.0 v3.1 v3.2 v3.3 v3.4 v3.5 v4.0 v4.0.1 v4.1 v4.1.1 v4.1.2 v4.2 v4.2.1 v4.2.2 v4.2.3 v4.2.4"
 
 
+echo "Available versions: "
+echo $VERSIONS
+
+
 build_with_verison_tags () {
     
     # if [ x$(echo "${API_DOC_NOT_ALLOWED[*]}" | grep -o "$version") != x ]; then
@@ -112,13 +116,14 @@ build_single_version () {
   fi 
 
   VERSIONS_GIT=$(echo "$VERSIONS" | sed ':a;N;$!ba;s/\n/ /g' )
+  echo "Versions in git: $VERSIONS_GIT"
   BASES=( $(get_base_versions "$VERSIONS_GIT") )
   LATEST_BASE="${BASES[-1]}"
   LATEST_TO_BUILD=$(get_latest_of_given_base "$VERSIONS_GIT" "$LATEST_BASE")
-  echo $LATEST_BASE
+  echo "Latest base:" $LATEST_BASE
   # This is to remove latest version that is already created before pushing vX.X.number
   ALREADY_CREATED=$(find $BUILD_DIR -maxdepth 1 -type d -name v$LATEST_BASE* -printf "%f")
-  echo "Removing previous version: base of $v$LATESTS_BASE.x" 
+  echo "Removing previous version: base of $v$LATEST_BASE.x" 
   rm -rf ALREADY_CREATED
 
 
