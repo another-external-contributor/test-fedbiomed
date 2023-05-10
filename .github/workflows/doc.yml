@@ -1,3 +1,4 @@
+name: Deploy github pages
 on:
   push:
     # Pattern matched against refs/tags

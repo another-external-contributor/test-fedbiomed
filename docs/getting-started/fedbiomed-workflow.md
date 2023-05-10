@@ -16,7 +16,7 @@ The steps are:
  4. <a class="scroller-link" href="#step-4-how-to-run-and-how-to-monitor-an-experiment">Run and monitor a Federated Model</a>
  5. <a class="scroller-link" href="#step-5-retrieving-model-and-performing-model-evaluation">Model retrieval and evaluation</a>
 
-For installation, please [visit the software installation page](/tutorials/installation/0-basic-software-installation/).
+For installation, please [visit the software installation page](../tutorials/installation/0-basic-software-installation/).
 
 ## Step 1: Setting up `Network` and `Nodes`.
 
