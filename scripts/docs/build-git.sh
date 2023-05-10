@@ -22,7 +22,7 @@ get_base_versions () {
 import re
 y="$1".split(' ');
 y=[i.replace('v', '') for i in y]
-v_base=list(set([re.sub("^([^\.]+\.[^\.]+)\..*", "", i )  for i in y if y!= '']))
+v_base=list(set([i[0:i.rindex('.')]  for i in y if y!= '']))
 v_base=list(filter(lambda x: x != '', v_base))
 v_base.sort(key=lambda s: [int(u) for u in s.split('.')])
 print(' '.join(v_base) )
@@ -119,6 +119,7 @@ build_single_version () {
   echo "Versions in git: $VERSIONS_GIT"
   BASES=( $(get_base_versions "$VERSIONS_GIT") ) || exit 1
 
+  echo ${BASES[@]}
   LATEST_BASE="${BASES[-1]}"
   LATEST_TO_BUILD=$(get_latest_of_given_base "$VERSIONS_GIT" "$LATEST_BASE") || exit 1
   echo "Latest base:" $LATEST_BASE
@@ -170,7 +171,7 @@ build_single_version () {
       ./scripts/docs/redirect.py --source $BUILD_DIR_TMP/v"$LATEST_TO_BUILD"/$r --base $BUILD_DIR_TMP -buri "../" || { exit 1; }
   done
 
-  rsync -q -av --checksum --progress $BUILD_DIR_TMP/. $BUILD_DIR --delete --exclude CNAME --exclude .nojekyll --exclude .ssh --exclude .git --exclude .github || { exit 1; }
+  rsync -q -av --checksum --progress $BUILD_DIR_TMP/. $BUILD_DIR --exclude CNAME --exclude .nojekyll --exclude .ssh --exclude .git --exclude .github || { exit 1; }
 
   # Creat symbolik link
   ln -sf $BUILD_DIR/v$LATEST_TO_BUILD $BUILD_DIR/latest  || { exit 1; }
@@ -191,9 +192,9 @@ build_single_version () {
   do  
       echo $index
       if [ "${index}" -eq "0" ]; then
-          VERSIONS_JSON+='"latest":"'"${E_VERSIONS[index]}"'"'
+          VERSIONS_JSON+='"latest":"'"v${E_VERSIONS[index]}"'"'
       else
-          VERSIONS_JSON+='"'"${E_VERSIONS[index]}"'":"'"${E_VERSIONS[index]}"'"'
+          VERSIONS_JSON+='"'"${E_VERSIONS[index]}"'":"'"v${E_VERSIONS[index]}"'"'
       fi
 
       if [ "$LAST" != "${E_VERSIONS[index]}" ]; then
