@@ -11,10 +11,17 @@
     <div class="main">
 
         {% if page.abs_url %}
-            {% set URLSlug = page.abs_url.split('/') %}
+            {% set BASE_URI = config.site_url.split('/')[3:] | join('/') %}
 
+            {% if BASE_URI != "" %}
+                {% set ABS_URL = page.abs_url.replace(BASE_URI, '')%}
+            {% else %}
+                {% set ABS_URL = page.abs_url %}
+            {% endif %}
+
+            {% set URLSlug = ABS_URL.split('/') %}
             <!-- Home page -->
-            {% if page.abs_url == "/" %}
+            {% if ABS_URL == "/" %}
                 {%- block home %}
                     {% include "home.html" %}
                 {%- endblock %}

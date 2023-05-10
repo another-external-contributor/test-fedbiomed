@@ -1,7 +1,8 @@
 site_name: Fed-BioMed
-url: /doc/
-site_url: https://fedbiomed.gitlabpages.inria.fr/
+site_url: https://fedbiomed.github.io/test-fedbiomed
 site_dir: public
+base_uri: !ENV FED_DOC_VERSION
+
 
 site_description: >- 
     Open, Transparent and Trusted Federated Learning for Real-world Healthcare Applications
@@ -14,7 +15,7 @@ theme:
   search_index_only: true
 
   language: en
-  features:
+  features: 
     - content.code.annotate
     - navigation.tabs
     - navigation.top

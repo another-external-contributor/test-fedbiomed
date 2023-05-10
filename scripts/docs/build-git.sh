@@ -33,6 +33,22 @@ EOF
     echo $T
 }
 
+
+sort_versions () {
+      T=$(
+python - << EOF
+import re
+versions="$1".split(' ');
+versions=[i.replace('v', '') for i in versions]
+
+versions.sort(key=lambda s: [int(u) for u in s.split('.')], reverse=True)
+print(' '.join(versions))
+EOF
+    )
+
+    echo $T
+}
+
 # Get latests version of given base version
 get_latest_of_given_base () {
 
@@ -95,7 +111,6 @@ build_single_version () {
     mkdir $BUILD_DIR
   fi 
 
-  EXISTING_VERSIONS_IN_BUILD_DIR=$(find "$BUILD_DIR" -maxdepth 1 -type d -name 'v[0-9].[0-9]*' -printf "%f")
   VERSIONS_GIT=$(echo "$VERSIONS" | sed ':a;N;$!ba;s/\n/ /g' )
   BASES=( $(get_base_versions "$VERSIONS_GIT") )
   LATEST_BASE="${BASES[-1]}"
@@ -103,39 +118,82 @@ build_single_version () {
   echo $LATEST_BASE
   # This is to remove latest version that is already created before pushing vX.X.number
   ALREADY_CREATED=$(find $BUILD_DIR -maxdepth 1 -type d -name v$LATEST_BASE* -printf "%f")
-  echo $ALREADY_CREATED
-  
+  echo "Removing previous version: base of $v$LATESTS_BASE.x" 
+  rm -rf ALREADY_CREATED
+
+
   echo "### Building menu -----------------------------------------------"
   echo $(python ./scripts/docs/menu.py) > $BUILD_DIR/menu.json
 
 
   # Build master documentation 
   # This is for main pages
-  $BASEDIR/scripts/docs/fedbiomed_doc.sh build --verbose -d "$BUILD_DIR_TMP"
+  $BASEDIR/scripts/docs/fedbiomed_doc.sh build -d "$BUILD_DIR_TMP"
+
+  # Build latest version 
+  # Create a new work tree to build latest version
+  echo "Building version v$LATEST_TO_BUILD"
+  git worktree add v"$LATEST_TO_BUILD"  v"$LATEST_TO_BUILD"
+
+  # If docs is not existing build it from master
+  if [ ! -d v"$LATEST_TO_BUILD"/docs ]; then
+    mkdir "$BUILD_DIR_TMP"/v"$LATEST_TO_BUILD"/
+    rsync -q -av --checksum --progress $BUILD_DIR_TMP/. $BUILD_DIR_TMP/v"$LATEST_TO_BUILD"/ --delete --exclude v"$LATEST_TO_BUILD"
+  else
+    FED_DOC_VERSION=v"$LATEST_TO_BUILD" $BASEDIR/scripts/docs/fedbiomed_doc.sh build --verbose -d "$BUILD_DIR_TMP"/v"$LATEST_TO_BUILD" --config-file v"$LATEST_TO_BUILD"/mkdocs.yml
+  fi
+
+  git worktree remove v"$LATEST_TO_BUILD"
+
 
   # Redirect base URL to latest for documentation related URI path
   FILES_TO_REDIRECT='getting-started tutorials user-guide developer'
   for r in ${FILES_TO_REDIRECT}; do 
       echo "Creating redirection for $r"
-      ./scripts/docs/redirect.py --source $BUILD_DIR/$r --base $BUILD_DIR
+      ./scripts/docs/redirect.py --source $BUILD_DIR_TMP/$r --base $BUILD_DIR_TMP -buri "/latest"
   done
 
+  # Redirect version base files
+    FILES_TO_REDIRECT='index.html pages support news'
+  for r in ${FILES_TO_REDIRECT}; do 
+      echo "Creating redirection for $r"
+      ./scripts/docs/redirect.py --source $BUILD_DIR_TMP/v"$LATEST_TO_BUILD"/$r --base $BUILD_DIR_TMP/v"$LATEST_TO_BUILD" -buri "/"
+  done
 
-  # Build latest version 
-  # Create a new work tree to build latest version
-  echo "Building version v$LATEST_TO_BUILD"
-  git worktree add v"$LATEST_TO_BUILD"
-  $BASEDIR/scripts/docs/fedbiomed_doc.sh build --verbose -d "$BUILD_DIR_TMP"/v"$LATEST_TO_BUILD" --config-file v"$LATEST_TO_BUILD"/mkdocs.yml
-  git worktree remove v"$LATEST_TO_BUILD"
-
-
-  rsync -av --checksum --progress $BUILD_DIR_TMP/. $BUILD_DIR --delete --exclude CNAME --exclude .nojekyll --exclude .ssh --exclude .git --exclude .github
+  rsync -q -av --checksum --progress $BUILD_DIR_TMP/. $BUILD_DIR --delete --exclude CNAME --exclude .nojekyll --exclude .ssh --exclude .git --exclude .github
 
   # Creat symbolik link
   ln -sf $BUILD_DIR/v$LATEST_TO_BUILD $BUILD_DIR/latest 
 
   # Remove temprory files
   rm -rf $BUILD_DIR_TMP
+
+  echo "Creating versions.json..........."
+  ON_V=$(find "$BUILD_DIR" -maxdepth 1 -type d -name 'v[0-9].[0-9]*' -printf " %f" | sed -s 's/ //')
+  echo $ON_V
+  E_VERSIONS=($(sort_versions  "$ON_V"))
+
+  echo "Exsiting versions in documentation"
+  echo $E_VERSIONS
+  LAST="${E_VERSIONS[${#E_VERSIONS[@]} - 1]}"
+  VERSIONS_JSON='{"versions":{'
+  for index in ${!E_VERSIONS[@]}
+  do  
+      echo $index
+      if [ "${index}" -eq "0" ]; then
+          VERSIONS_JSON+='"latest":"'"${E_VERSIONS[index]}"'"'
+      else
+          VERSIONS_JSON+='"'"${E_VERSIONS[index]}"'":"'"${E_VERSIONS[index]}"'"'
+      fi
+
+      if [ "$LAST" != "${E_VERSIONS[index]}" ]; then
+          VERSIONS_JSON+=','
+      fi
+
+  done
+  VERSIONS_JSON+='} }'
+  echo $VERSIONS_JSON > "$BUILD_DIR/versions.json"
+
 }
 
 
@@ -171,6 +229,8 @@ while :
   done
 
 
+
+# Build docs
 build_single_version
 
 # Build documentation

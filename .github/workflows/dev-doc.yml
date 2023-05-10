@@ -31,7 +31,7 @@ jobs:
           ls -la ./
           ls -la ./build
       - name: Install dependencies
-        run: pip install -r ./docs/requirements.txt
+        run: pip install -r docs-requirements.txt
       - name: Check directory
         run: ls -la  
       # Build documentation 
