@@ -52,7 +52,12 @@ $(document).ready(async function(){
      * Gets versions JSON object and run version related functions
      */
     try {
-        let data = await $.getJSON('/versions.json')
+        console.log(versions_json)
+        if(!versions_json){
+            versions_json="/versions.json"
+        }
+
+        let data = await $.getJSON(versions_json)
         versions = data.versions
         docurl = data.docurl
         const selectBox = versionSelectBox(versions);
@@ -64,82 +69,12 @@ $(document).ready(async function(){
         displayVersionWarning()
         updateHomeDocsURLS()
 
-        $.getJSON('/menu.json', function(data) {
-            topMenu = data.top
-            footerMenu = data.footer
-            element = createTopNav(topMenu)
-            topNav = $('nav.top')
-            topMobile = $('nav.top-mobile')
-            topNav.html(element)
-            topMobile.html(element)
-        })
-
         is_version_available = true
     }catch {
         is_version_available = false
         console.warn('Versioning wont be available')
     }
 
-
-
-    /**
-     * This function recreates navigation bar based on latest version
-     * and updates menus for each previous version.
-     * @param data
-     * @returns {string}
-     */
-    function createTopNav(data){
-        let element = "<ul>"
-        data['Top-Bar'].forEach(item => {
-            let name = Object.keys(item)[0]
-            let link = item[name]
-
-            if(Array.isArray(link)){
-                element += '<li id="clicker" class="has-sub">' + 'More <i class="bi bi-chevron-down"></i>' +
-                           '<ul class="sub-nav-menu">'
-                link.forEach(item => {
-                    name = Object.keys(item)[0]
-                    link = item[name]
-                    link = returnNewLink(link)
-                    element += '<li><a href="'+link+'">'+name+'</a></li>'
-                })
-                element += '</ul></li>'
-
-            }else{
-                link = returnNewLink(link)
-                element += '<li><a href="'+link+'">'+name+'</a></li>'
-            }
-        })
-        element += '</ul>'
-
-        return element
-    }
-
-    /**
-     * Return modified link based on verisoning
-     * @param link
-     */
-    function returnNewLink(link){
-            link = link.replace('.md' , '')
-            link = link.replace('.ipynb', '')
-            link = link.includes('index') ? link.replace('index' , '') : link
-
-            if(link.startsWith('./')){
-                link = link.replace('./' , '/')
-            }else if(!link.startsWith('/') ){
-                link = '/' + link
-            }
-            link = link.replace('//' , '/')
-
-            let ver_url = checkPathHasVersion(pathname)
-            if(ver_url != false && link.includes(docurl)){
-                link = '/' + ver_url + link
-            }else if(ver_url == false && link.includes(docurl)){
-                link = '/latest' + link
-            }
-
-            return link
-    }
 
     /**
      * This function create popup if user is not displaying

@@ -5,9 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
     {% if config.base_uri %}
-      <base href="/{{config.base_uri}}" />
+      <base href="{{config.base_uri | url }}" />
     {% endif %}
-    
+    <script>
+      const versions_json = "../{{ 'versions.json' | url }}"
+    </script>
     <!-- Site title -->
     {% block htmltitle %}
       {% if page and page.meta and page.meta.title %}

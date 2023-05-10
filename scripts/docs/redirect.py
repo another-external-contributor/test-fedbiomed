@@ -28,11 +28,26 @@ def produce_redirection(base, uri, path):
         template= Template(f.read().decode('utf-8'), 
                            autoescape=True,
                            keep_trailing_newline=True)
+        url=path.replace(base, '')
 
-        uri = uri if uri else "/"
-        href = f"{uri}{path.replace(base, '')}".replace('//', '/')
-        index_html = template.render(href=href[1:])
+        if uri == "../":
+            print("URL:")
+            print(url)
+            url_splited = "/".join(url.strip("/").split('/')[1:])
+            print("After spliting")
+            print(url)
+            reldst=os.path.relpath(f"/{url_splited}", url)
+            print("relative")
+            print(reldst)
+        else:
+            
+            reldst=os.path.relpath(f"{uri}{os.path.sep}{url}", url)
 
+        # Relative path
+        href = '/'.join(reldst.split(os.path.sep))
+
+        index_html = template.render(href=href)
+        
         # Overwrite index html
         with open(os.path.join(path, 'index.html'), '+w') as file:
             file.write(index_html)
@@ -48,7 +63,7 @@ def produce_redirection(base, uri, path):
             os.remove(f)
 
 if os.path.isfile(args.source):
-    produce_redirection(args.base, args.base_uri, args.base)
+    produce_redirection(args.base, args.base_uri, os.path.dirname(args.source))
 
 
 for (dirpath, dirnames, filenames) in os.walk(args.source):

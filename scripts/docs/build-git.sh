@@ -157,7 +157,7 @@ build_single_version () {
     FILES_TO_REDIRECT='index.html pages support news'
   for r in ${FILES_TO_REDIRECT}; do 
       echo "Creating redirection for $r"
-      ./scripts/docs/redirect.py --source $BUILD_DIR_TMP/v"$LATEST_TO_BUILD"/$r --base $BUILD_DIR_TMP/v"$LATEST_TO_BUILD" -buri "/"
+      ./scripts/docs/redirect.py --source $BUILD_DIR_TMP/v"$LATEST_TO_BUILD"/$r --base $BUILD_DIR_TMP -buri "../"
   done
 
   rsync -q -av --checksum --progress $BUILD_DIR_TMP/. $BUILD_DIR --delete --exclude CNAME --exclude .nojekyll --exclude .ssh --exclude .git --exclude .github
