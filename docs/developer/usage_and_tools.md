@@ -318,7 +318,7 @@ Note: some previously existing tags are now removed - *postponed*, *feature*, *i
 
 * summary :
 
-<img src="/assets/img/fedbiomed_dev_usage_issues.png" width=600>
+<img src="assets/img/fedbiomed_dev_usage_issues.png" width=600>
 
 
 ## Other tools
