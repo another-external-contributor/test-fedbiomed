@@ -143,7 +143,7 @@ build_single_version () {
 
   echo "Copying reference template"
   rsync -q -av --checksum --progress docs/theme/. v"$LATEST_TO_BUILD"/docs/theme/ --delete || exit 1
-  rsync -q -av --checksum --progress docs/template/. v"$LATEST_TO_BUILD"/docs/template/ --delete || exit 1
+  rsync -q -av --checksum --progress docs/templates/. v"$LATEST_TO_BUILD"/docs/template/ --delete || exit 1
 
   # If docs is not existing build it from master
   if [ ! -d v"$LATEST_TO_BUILD"/docs ]; then
