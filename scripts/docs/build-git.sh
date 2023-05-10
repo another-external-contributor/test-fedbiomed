@@ -28,7 +28,7 @@ v_base.sort(key=lambda s: [int(u) for u in s.split('.')])
 print(' '.join(v_base) )
 
 EOF
-)
+) || exit 1
 
     echo $T
 }
@@ -44,7 +44,7 @@ versions=[i.replace('v', '') for i in versions]
 versions.sort(key=lambda s: [int(u) for u in s.split('.')], reverse=True)
 print(' '.join(versions))
 EOF
-    )
+    ) || exit 1
 
     echo $T
 }
@@ -64,7 +64,7 @@ n=list(filter(lambda version: re.match(r'^$2', version), versions))
 n.sort(key=lambda s: [int(u) for u in s.split('.')])
 print(n[-1])
 EOF
-    )
+    ) || exit 1
 
     echo $T
 }
@@ -77,7 +77,7 @@ VERSION=$1
 VERSIONS=`git tag -l`
 
 # Declare version whose API docs are not allowed
-VERSION_BULD_STARTS_FROM=$(int $(echo v4.2.1 | sed 's/v//;s/\.//g' | awk '{while(length<3) $0=$0 "0"}1'))
+VERSION_BULD_STARTS_FROM=$(int $(echo v4.2.1 | sed 's/v//;s/\.//g' | awk '{while(length<3) $0=$0 "0"}1') || exit 1 ) || exit 1
 
 # Versions that does not have 'docs' directory
 VERISONS_NOT_ALLOWED="v3.0 v3.1 v3.2 v3.3 v3.4 v3.5 v4.0 v4.0.1 v4.1 v4.1.1 v4.1.2 v4.2 v4.2.1 v4.2.2 v4.2.3 v4.2.4"
@@ -95,9 +95,9 @@ build_with_verison_tags () {
     #   ./scripts/fedbiomed_doc.sh --branch "${version}" build --verbose -d "$BUILD_DIR/${VERSION_FOLDER}"
 
     # fi
-    VERSIONS=$(echo "$VERSIONS" | sed ':a;N;$!ba;s/\n/ /g' )
+    VERSIONS=$(echo "$VERSIONS" | sed ':a;N;$!ba;s/\n/ /g' ) || exit 1
     
-    BASES=$(get_base_versions "$VERSIONS")
+    BASES=$(get_base_versions "$VERSIONS") || exit 1
 
     echo "$VERSIONS"
     for b in ${BASES}; do
@@ -115,68 +115,73 @@ build_single_version () {
     mkdir $BUILD_DIR
   fi 
 
-  VERSIONS_GIT=$(echo "$VERSIONS" | sed ':a;N;$!ba;s/\n/ /g' )
+  VERSIONS_GIT=$(echo "$VERSIONS" | sed ':a;N;$!ba;s/\n/ /g' ) || exit 1
   echo "Versions in git: $VERSIONS_GIT"
-  BASES=( $(get_base_versions "$VERSIONS_GIT") )
+  BASES=( $(get_base_versions "$VERSIONS_GIT") ) || exit 1
+
   LATEST_BASE="${BASES[-1]}"
-  LATEST_TO_BUILD=$(get_latest_of_given_base "$VERSIONS_GIT" "$LATEST_BASE")
+  LATEST_TO_BUILD=$(get_latest_of_given_base "$VERSIONS_GIT" "$LATEST_BASE") || exit 1
   echo "Latest base:" $LATEST_BASE
   # This is to remove latest version that is already created before pushing vX.X.number
-  ALREADY_CREATED=$(find $BUILD_DIR -maxdepth 1 -type d -name v$LATEST_BASE* -printf "%f")
+  ALREADY_CREATED=$(find $BUILD_DIR -maxdepth 1 -type d -name v$LATEST_BASE* -printf "%f") || exit 1
   echo "Removing previous version: base of $v$LATEST_BASE.x" 
   rm -rf ALREADY_CREATED
 
 
   echo "### Building menu -----------------------------------------------"
-  echo $(python ./scripts/docs/menu.py) > $BUILD_DIR/menu.json
+  echo $(python ./scripts/docs/menu.py) || exit 1 > $BUILD_DIR/menu.json 
 
 
   # Build master documentation 
   # This is for main pages
-  $BASEDIR/scripts/docs/fedbiomed_doc.sh build -d "$BUILD_DIR_TMP"
+  $BASEDIR/scripts/docs/fedbiomed_doc.sh build -d "$BUILD_DIR_TMP" || { exit 1; }
 
   # Build latest version 
   # Create a new work tree to build latest version
   echo "Building version v$LATEST_TO_BUILD"
-  git worktree add v"$LATEST_TO_BUILD"  v"$LATEST_TO_BUILD"
+  git worktree add v"$LATEST_TO_BUILD"  v"$LATEST_TO_BUILD" || { exit 1; }
+
+  echo "Copying reference template"
+  rsync -q -av --checksum --progress docs/theme/. v"$LATEST_TO_BUILD"/docs/theme/ --delete || exit 1
+  rsync -q -av --checksum --progress docs/template/. v"$LATEST_TO_BUILD"/docs/template/ --delete || exit 1
 
   # If docs is not existing build it from master
   if [ ! -d v"$LATEST_TO_BUILD"/docs ]; then
     mkdir "$BUILD_DIR_TMP"/v"$LATEST_TO_BUILD"/
     rsync -q -av --checksum --progress $BUILD_DIR_TMP/. $BUILD_DIR_TMP/v"$LATEST_TO_BUILD"/ --delete --exclude v"$LATEST_TO_BUILD"
   else
-    FED_DOC_VERSION=v"$LATEST_TO_BUILD" $BASEDIR/scripts/docs/fedbiomed_doc.sh build --verbose -d "$BUILD_DIR_TMP"/v"$LATEST_TO_BUILD" --config-file v"$LATEST_TO_BUILD"/mkdocs.yml
+    FED_DOC_VERSION=v"$LATEST_TO_BUILD" $BASEDIR/scripts/docs/fedbiomed_doc.sh build --verbose -d "$BUILD_DIR_TMP"/v"$LATEST_TO_BUILD" --config-file v"$LATEST_TO_BUILD"/mkdocs.yml || { exit 1; }
   fi
 
-  git worktree remove v"$LATEST_TO_BUILD"
+  git worktree remove --force v"$LATEST_TO_BUILD" || { exit 1; }
 
 
   # Redirect base URL to latest for documentation related URI path
   FILES_TO_REDIRECT='getting-started tutorials user-guide developer'
   for r in ${FILES_TO_REDIRECT}; do 
       echo "Creating redirection for $r"
-      ./scripts/docs/redirect.py --source $BUILD_DIR_TMP/$r --base $BUILD_DIR_TMP -buri "/latest"
+      ./scripts/docs/redirect.py --source $BUILD_DIR_TMP/$r --base $BUILD_DIR_TMP -buri "/latest" || { exit 1; }
   done
 
   # Redirect version base files
     FILES_TO_REDIRECT='index.html pages support news'
   for r in ${FILES_TO_REDIRECT}; do 
       echo "Creating redirection for $r"
-      ./scripts/docs/redirect.py --source $BUILD_DIR_TMP/v"$LATEST_TO_BUILD"/$r --base $BUILD_DIR_TMP -buri "../"
+      ./scripts/docs/redirect.py --source $BUILD_DIR_TMP/v"$LATEST_TO_BUILD"/$r --base $BUILD_DIR_TMP -buri "../" || { exit 1; }
   done
 
-  rsync -q -av --checksum --progress $BUILD_DIR_TMP/. $BUILD_DIR --delete --exclude CNAME --exclude .nojekyll --exclude .ssh --exclude .git --exclude .github
+  rsync -q -av --checksum --progress $BUILD_DIR_TMP/. $BUILD_DIR --delete --exclude CNAME --exclude .nojekyll --exclude .ssh --exclude .git --exclude .github || { exit 1; }
 
   # Creat symbolik link
-  ln -sf $BUILD_DIR/v$LATEST_TO_BUILD $BUILD_DIR/latest 
+  ln -sf $BUILD_DIR/v$LATEST_TO_BUILD $BUILD_DIR/latest  || { exit 1; }
 
   # Remove temprory files
   rm -rf $BUILD_DIR_TMP
 
   echo "Creating versions.json..........."
-  ON_V=$(find "$BUILD_DIR" -maxdepth 1 -type d -name 'v[0-9].[0-9]*' -printf " %f" | sed -s 's/ //')
+  ON_V=$(find "$BUILD_DIR" -maxdepth 1 -type d -name 'v[0-9].[0-9]*' -printf " %f" | sed -s 's/ //') || exit 1
   echo $ON_V
-  E_VERSIONS=($(sort_versions  "$ON_V"))
+  E_VERSIONS=($(sort_versions  "$ON_V")) || exit 1
 
   echo "Exsiting versions in documentation"
   echo $E_VERSIONS

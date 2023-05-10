@@ -31,16 +31,9 @@ def produce_redirection(base, uri, path):
         url=path.replace(base, '')
 
         if uri == "../":
-            print("URL:")
-            print(url)
             url_splited = "/".join(url.strip("/").split('/')[1:])
-            print("After spliting")
-            print(url)
             reldst=os.path.relpath(f"/{url_splited}", url)
-            print("relative")
-            print(reldst)
         else:
-            
             reldst=os.path.relpath(f"{uri}{os.path.sep}{url}", url)
 
         # Relative path
