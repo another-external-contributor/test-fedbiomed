@@ -30,7 +30,7 @@ jobs:
           git config user.email "<>"
           git status
           git tag
-          git describe
+          git tag -l
 #       - name: Setup python
 #         uses: actions/setup-python@v4
 #         with:
