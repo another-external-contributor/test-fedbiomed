@@ -31,7 +31,7 @@ def produce_redirection(base, uri, path):
 
         uri = uri if uri else "/"
         href = f"{uri}{path.replace(base, '')}".replace('//', '/')
-        index_html = template.render(href=href)
+        index_html = template.render(href=href[1:])
 
         # Overwrite index html
         with open(os.path.join(path, 'index.html'), '+w') as file:
