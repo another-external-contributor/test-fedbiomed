@@ -22,8 +22,15 @@ jobs:
           repository: fedbiomed/docs
           ssh-key: ${{ secrets.STORE_DOCS_REPO_KEY }}
           path: build
-      - name: Check git command 
-        run: git tag -l
+      - name: git
+        run: |
+          # setup the username and email. I tend to use 'GitHub Actions Bot' with no email by default
+          git --version
+          git config user.name "GitHub Actions Bot"
+          git config user.email "<>"
+          git status
+          git tag
+          git describe
 #       - name: Setup python
 #         uses: actions/setup-python@v4
 #         with:
