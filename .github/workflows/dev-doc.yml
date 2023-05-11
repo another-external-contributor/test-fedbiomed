@@ -13,9 +13,6 @@ jobs:
       - name: Checkout to repositort
         uses: actions/checkout@v3
       
-      - name: Checkout do Docs repository
-        uses: actions/checkout@v3
-
       - name: Checkout tools repo
         uses: actions/checkout@v3
         with:
@@ -29,6 +26,8 @@ jobs:
           git config --global user.name "GitHub Actions Bot"
           git config --global user.email "<>"
           git fetch --tags
+          git fetch origin master
+          get checkout master
           git tag -l
       - name: Setup python
         uses: actions/setup-python@v4
@@ -40,7 +39,7 @@ jobs:
 
 
       - name: Build documentation
-        run: scripts/docs/build-git.sh --build-dir build-repo
+        run: scripts/docs/fedbiomed_doc.sh --build-dir build-repo
       
       - name: Push change to docs repo
         run: |
