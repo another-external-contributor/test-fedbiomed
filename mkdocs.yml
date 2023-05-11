@@ -9,7 +9,7 @@ site_description: >-
 theme:
   name: material
   logo: assets/img/fedbiomed-logo-small.png
-  custom_dir: docs/theme/
+  custom_dir: docs/.templates/theme/
 
   include_search_page: false
   search_index_only: true
@@ -273,7 +273,7 @@ plugins:
   - mkdocs-jupyter:
       include_source: True
   - mkdocstrings:
-      custom_templates: templates
+      custom_templates: docs/.templates
       default_handler: python
       handlers:
         python:

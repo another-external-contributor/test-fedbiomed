@@ -139,8 +139,7 @@ build_single_version () {
   git worktree add v"$LATEST_TO_BUILD"  v"$LATEST_TO_BUILD" || { cleaning; exit 1; }
 
   echo "Copying reference template"
-  rsync -q -av --checksum --progress docs/theme/. v"$LATEST_TO_BUILD"/docs/theme/ --delete || { cleaning; exit 1; }
-  rsync -q -av --checksum --progress docs/templates/. v"$LATEST_TO_BUILD"/docs/template/ --delete || { cleaning; exit 1; }
+  rsync -q -av --checksum --progress docs/.templates/. v"$LATEST_TO_BUILD"/docs/.templates/ --delete || { cleaning; exit 1; }
 
   # If docs is not existing build it from master
   if [ ! -d v"$LATEST_TO_BUILD"/docs ]; then
