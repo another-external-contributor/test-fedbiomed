@@ -98,7 +98,7 @@ VERSIONS=`git tag -l`
 VERSION_BULD_STARTS_FROM=$(int $(echo v4.2.1 | sed 's/v//;s/\.//g' | awk '{while(length<3) $0=$0 "0"}1') || exit 1 ) || exit 1
 
 # Versions that does not have 'docs' directory
-VERISONS_NOT_ALLOWED="v3.0 v3.1 v3.2 v3.3 v3.4 v3.5 v4.0 v4.0.1 v4.1 v4.1.1 v4.1.2 v4.2 v4.2.1 v4.2.2 v4.2.3 v4.2.4"
+VERISONS_NOT_ALLOWED_TO_BUILD="v3.0 v3.1 v3.2 v3.3 v3.4 v3.5 v4.0 v4.0.1 v4.1 v4.1.1 v4.1.2 v4.2 v4.2.1 v4.2.2 v4.2.3 v4.2.4 v4.2.5"
 
 
 echo "Available versions: "
@@ -120,13 +120,13 @@ build_single_version () {
   LATEST_TO_BUILD=$(get_latest_of_given_base "$VERSIONS_GIT" "$LATEST_BASE") || exit 1
   echo "Latest base:" $LATEST_BASE
   # This is to remove latest version that is already created before pushing vX.X.number
-  ALREADY_CREATED=$(find $BUILD_DIR -maxdepth 1 -type d -name v$LATEST_BASE* -printf "%f") || exit 1
-  echo "Removing previous version: base of $v$LATEST_BASE.x" 
-  rm -rf ALREADY_CREATED
+  ALREADY_CREATED=$(find $BUILD_DIR -maxdepth 1 -type d -name v$LATEST_BASE* -printf " %f") || exit 1
 
-
-  echo "### Building menu -----------------------------------------------"
-  echo $(python ./scripts/docs/menu.py) || exit 1 > $BUILD_DIR/menu.json  
+  
+  if [ x$(echo "${VERISONS_NOT_ALLOWED_TO_BUILD[*]}" | grep -o "$LATEST_TO_BUILD") != x  ]; then 
+    echo "$LATEST_TO_BUILD is not allowed to build"
+    exit 1
+  fi
 
 
   # Build master documentation 
@@ -142,6 +142,7 @@ build_single_version () {
   rsync -q -av --checksum --progress docs/.templates/. v"$LATEST_TO_BUILD"/docs/.templates/ --delete || { cleaning; exit 1; }
 
   # If docs is not existing build it from master
+  
   if [ ! -d v"$LATEST_TO_BUILD"/docs ]; then
     mkdir "$BUILD_DIR_TMP"/v"$LATEST_TO_BUILD"/ || { cleaning; exit 1; }
     rsync -q -av --checksum --progress $BUILD_DIR_TMP/. $BUILD_DIR_TMP/v"$LATEST_TO_BUILD"/ --delete --exclude v"$LATEST_TO_BUILD" || { cleaning; exit 1; }
@@ -174,6 +175,12 @@ build_single_version () {
   # Remove temprory files
   rm -rf $BUILD_DIR_TMP
 
+  echo "Removing previous version: base of $v$LATEST_BASE.x" 
+  rm -rf $ALREADY_CREATED
+  if [ -n $ALREADY_CREATED && "$ALREADY_CREATED" != "v$LATEST_TO_BUILD"];
+    rm -rf $BUILD_DIR/$ALREADY_CREATED
+  fi
+
   echo "Creating versions.json..........."
   ON_V=$(find "$BUILD_DIR" -maxdepth 1 -type d -name 'v[0-9].[0-9]*' -printf " %f" | sed -s 's/ //') || { cleaning; exit 1; }
   E_VERSIONS=($(sort_versions  "$ON_V")) || { cleaning; exit 1; }
@@ -198,6 +205,10 @@ build_single_version () {
   done
   VERSIONS_JSON+='} }'
   echo $VERSIONS_JSON > "$BUILD_DIR/versions.json"
+
+
+  echo "### Building menu -----------------------------------------------"
+  echo $(python ./scripts/docs/menu.py) || exit 1 > $BUILD_DIR/menu.json  
 
 }
 
