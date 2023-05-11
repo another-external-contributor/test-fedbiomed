@@ -21,7 +21,7 @@ jobs:
         with:
           repository: fedbiomed/docs
           ssh-key: ${{ secrets.STORE_DOCS_REPO_KEY }}
-          path: build
+          path: build-repo
       - name: git
         run: |
           # setup the username and email. I tend to use 'GitHub Actions Bot' with no email by default
@@ -34,23 +34,32 @@ jobs:
         uses: actions/setup-python@v4
         with:
             python-version: '3.11' 
-      - name: Check directory
-        run: |
-          ls -la ./
-          ls -la ./build
+
       - name: Install dependencies
         run: pip install -r docs-requirements.txt
-      - name: Check directory
-        run: ls -la  
-      # Build documentation 
+
+
       - name: Build documentation
-        run: scripts/docs/build-git.sh build
+        run: scripts/docs/build-git.sh --build-dir build-repo
       
+      - name: Push change to docs repo
+        run: |
+          cd build-repo
+          git add .
+          git commit -m "Deploy action: documentation build/update" 
+          git push --force
+          cd ../
+
+      - name: Prepare public web content
+        run: |
+          mkdir public
+          rsync -q -av --checksum --progress build-repo/. public/ --exclude CNAME --exclude .nojekyll --exclude .ssh --exclude .git --exclude .github
+
       # Upload built documentation source code
       - name: Upload Artificat
         uses: actions/upload-pages-artifact@v1
         with:
-          path: 'build'
+          path: 'public'
  
   deploy:
     name: Deploy Documentation

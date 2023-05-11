@@ -65,7 +65,7 @@ $(document).ready(async function(){
             '<div class="version-box"> Version: '+selectBox+'</div></hr>'
         )
         updateVersionBox()
-        updateMainDocsURLS()
+        //updateMainDocsURLS()
         displayVersionWarning()
         updateHomeDocsURLS()
 
