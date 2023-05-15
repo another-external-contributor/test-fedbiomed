@@ -10,8 +10,7 @@ jobs:
           auto-update-conda: true
           python-version: 3.9
           miniconda-version: "latest"
-      - uses: docker-practice/actions-setup-docker@master
-        timeout-minutes: 12
+      - uses: crazy-max/ghaction-setup-docker@v1
       - run: |
           set -x
           docker version
