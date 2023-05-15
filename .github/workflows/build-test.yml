@@ -1,0 +1,23 @@
+name: FBM-build-test
+run-name: FBM-build-test
+on: [push]
+jobs:
+  runs-on: macos-13
+  steps:     
+    - . /opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh
+    - export PATH=${PATH}:/usr/local/bin
+    - echo $PATH
+    - ./scripts/configure_conda researcher network
+    - conda env update -f envs/development/conda/fedbiomed-researcher.yaml 
+    - ##
+    - ## changed by JLS : 11/02/2022
+    - /usr/bin/conda run -n fedbiomed-researcher nosetests --cover-xml --cover-erase --with-coverage --cover-package=fedbiomed --with-xunit -v
+    - #
+    - ./scripts/fedbiomed_run network
+    - ##
+    - ## changed by MV SC : 04/04/2023
+    - /usr/bin/conda run -n fedbiomed-researcher nosetests --cover-xml --cover-erase --with-coverage --cover-package=fedbiomed --with-xunit -v --process-restartworker
+    - ## - `-w tests` specifies tests directory in order to avoid fails due mocking environ object. 
+    - ## - need PYTHONPATH when using `-w tests`
+    - PYTHONPATH=${PYTHONPATH:-$PWD} conda run -n fedbiomed-researcher nosetests -w tests --cover-xml --cover-erase --with-coverage --cover-package=fedbiomed --with-xunit -v --process-restartworker
+    - ./scripts/fedbiomed_run network stop
