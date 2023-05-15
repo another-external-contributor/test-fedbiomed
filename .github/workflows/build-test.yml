@@ -10,7 +10,7 @@ jobs:
           auto-update-conda: true
           python-version: 3.9
           miniconda-version: "latest"
-      - run: . /opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh
+#      - run: . /opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh
       - run: export PATH=${PATH}:/usr/local/bin
       - run: echo $PATH
       - run: ./scripts/configure_conda researcher network
