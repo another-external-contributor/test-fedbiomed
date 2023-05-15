@@ -16,8 +16,8 @@ jobs:
           docker version
           docker run --rm hello-world
       - name: FBM_App_Setup
+        - uses: actions/checkout@v3
         run: |
-          actions/checkout@v3
           ./scripts/configure_conda researcher network
           ./scripts/fedbiomed_run network
       - name: FBM_Tests  
