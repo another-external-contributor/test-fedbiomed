@@ -9,6 +9,7 @@ jobs:
         with:
           auto-update-conda: true
           python-version: 3.9
+          miniconda-version: "latest"
       - run: brew install miniconda3
       - run: . /opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh
       - run: export PATH=${PATH}:/usr/local/bin
