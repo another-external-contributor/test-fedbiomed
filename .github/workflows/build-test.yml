@@ -5,26 +5,27 @@ jobs:
   build-test:
     runs-on: macos-13
     steps:
-      - uses: conda-incubator/setup-miniconda@v2
-        with:
-          auto-update-conda: true
-          python-version: 3.9
-          miniconda-version: "latest"
-#      - run: . /opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh
-      - run: export PATH=${PATH}:/usr/local/bin
-      - run: echo $PATH
-      - uses: actions/checkout@v3
-      - run: ./scripts/configure_conda researcher network
-      - run: conda env update -f envs/development/conda/fedbiomed-researcher.yaml 
-      ##
-      ## changed by JLS : 11/02/2022
-      - run: /usr/bin/conda run -n fedbiomed-researcher nosetests --cover-xml --cover-erase --with-coverage --cover-package=fedbiomed --with-xunit -v
-      #
-      - run: ./scripts/fedbiomed_run network
-      ##
-      ## changed by MV SC : 04/04/2023
-      - run: /usr/bin/conda run -n fedbiomed-researcher nosetests --cover-xml --cover-erase --with-coverage --cover-package=fedbiomed --with-xunit -v --process-restartworker
-      ## - `-w tests` specifies tests directory in order to avoid fails due mocking environ object. 
-      ## - need PYTHONPATH when using `-w tests`
-      - run: PYTHONPATH=${PYTHONPATH:-$PWD} conda run -n fedbiomed-researcher nosetests -w tests --cover-xml --cover-erase --with-coverage --cover-package=fedbiomed --with-xunit -v --process-restartworker
-      - run: ./scripts/fedbiomed_run network stop
+      - name: FBM_Basic_Setup
+        run: |
+          uses: conda-incubator/setup-miniconda@v2
+          with:
+            auto-update-conda: true
+            python-version: 3.9
+            miniconda-version: "latest"
+          brew install docker
+          colima start
+      - name: FBM_App_Setup
+        run: |
+          export PATH=${PATH}:/usr/local/bin
+          echo $PATH
+          actions/checkout@v3
+          ./scripts/configure_conda researcher network
+          conda env update -f envs/development/conda/fedbiomed-researcher.yaml 
+          /usr/bin/conda run -n fedbiomed-researcher nosetests --cover-xml --cover-erase --with-coverage --cover-package=fedbiomed --with-xunit -v
+          ./scripts/fedbiomed_run network
+      - name: FBM_Tests  
+        run: |
+          /usr/bin/conda run -n fedbiomed-researcher nosetests --cover-xml --cover-erase --with-coverage --cover-package=fedbiomed --with-xunit -v --process-restartworker
+          PYTHONPATH=${PYTHONPATH:-$PWD} conda run -n fedbiomed-researcher nosetests -w tests --cover-xml --cover-erase --with-coverage --cover-package=fedbiomed --with-xunit -v --process-restartworker
+      - name: FBM_Shutdown
+        run: ./scripts/fedbiomed_run network stop
