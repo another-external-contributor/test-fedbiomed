@@ -6,18 +6,16 @@ jobs:
     runs-on: macos-13
     steps:
       - name: FBM_Basic_Setup
-        run: |
-          uses: conda-incubator/setup-miniconda@v2
+        uses: conda-incubator/setup-miniconda@v2
           with:
             auto-update-conda: true
             python-version: 3.9
             miniconda-version: "latest"
+        run: |
           brew install docker
           colima start
       - name: FBM_App_Setup
         run: |
-# useful?         export PATH=${PATH}:/usr/local/bin
-#          echo $PATH
           actions/checkout@v3
           ./scripts/configure_conda researcher network
           ./scripts/fedbiomed_run network
