@@ -16,16 +16,12 @@ jobs:
           colima start
       - name: FBM_App_Setup
         run: |
-          export PATH=${PATH}:/usr/local/bin
-          echo $PATH
+# useful?         export PATH=${PATH}:/usr/local/bin
+#          echo $PATH
           actions/checkout@v3
           ./scripts/configure_conda researcher network
-          conda env update -f envs/development/conda/fedbiomed-researcher.yaml 
-          /usr/bin/conda run -n fedbiomed-researcher nosetests --cover-xml --cover-erase --with-coverage --cover-package=fedbiomed --with-xunit -v
           ./scripts/fedbiomed_run network
       - name: FBM_Tests  
-        run: |
-          /usr/bin/conda run -n fedbiomed-researcher nosetests --cover-xml --cover-erase --with-coverage --cover-package=fedbiomed --with-xunit -v --process-restartworker
-          PYTHONPATH=${PYTHONPATH:-$PWD} conda run -n fedbiomed-researcher nosetests -w tests --cover-xml --cover-erase --with-coverage --cover-package=fedbiomed --with-xunit -v --process-restartworker
+        run: PYTHONPATH=${PYTHONPATH:-$PWD} /usr/bin/conda run -n fedbiomed-researcher nosetests -w tests --cover-xml --cover-erase --with-coverage --cover-package=fedbiomed --with-xunit -v --process-restartworker
       - name: FBM_Shutdown
         run: ./scripts/fedbiomed_run network stop
