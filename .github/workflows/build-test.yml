@@ -13,6 +13,7 @@ jobs:
 #      - run: . /opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh
       - run: export PATH=${PATH}:/usr/local/bin
       - run: echo $PATH
+      - uses: actions/checkout@v3
       - run: ./scripts/configure_conda researcher network
       - run: conda env update -f envs/development/conda/fedbiomed-researcher.yaml 
       ##
