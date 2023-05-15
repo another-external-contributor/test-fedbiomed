@@ -10,10 +10,8 @@ jobs:
           auto-update-conda: true
           python-version: 3.9
           miniconda-version: "latest"
-      - name: FBM_Basic_Setup  
-        run: |
-          brew install docker
-          colima start
+      - uses: docker-practice/actions-setup-docker@master
+        timeout-minutes: 12
       - name: FBM_App_Setup
         run: |
           actions/checkout@v3
