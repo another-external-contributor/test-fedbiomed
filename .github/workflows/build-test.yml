@@ -10,15 +10,15 @@ jobs:
       - run: echo $PATH
       - run: ./scripts/configure_conda researcher network
       - run: conda env update -f envs/development/conda/fedbiomed-researcher.yaml 
-      - run: ##
-      - run: ## changed by JLS : 11/02/2022
+      ##
+      ## changed by JLS : 11/02/2022
       - run: /usr/bin/conda run -n fedbiomed-researcher nosetests --cover-xml --cover-erase --with-coverage --cover-package=fedbiomed --with-xunit -v
-      - run: #
+      #
       - run: ./scripts/fedbiomed_run network
-      - run: ##
-      - run: ## changed by MV SC : 04/04/2023
+      ##
+      ## changed by MV SC : 04/04/2023
       - run: /usr/bin/conda run -n fedbiomed-researcher nosetests --cover-xml --cover-erase --with-coverage --cover-package=fedbiomed --with-xunit -v --process-restartworker
-      - run: ## - `-w tests` specifies tests directory in order to avoid fails due mocking environ object. 
-      - run: ## - need PYTHONPATH when using `-w tests`
+      ## - `-w tests` specifies tests directory in order to avoid fails due mocking environ object. 
+      ## - need PYTHONPATH when using `-w tests`
       - run: PYTHONPATH=${PYTHONPATH:-$PWD} conda run -n fedbiomed-researcher nosetests -w tests --cover-xml --cover-erase --with-coverage --cover-package=fedbiomed --with-xunit -v --process-restartworker
       - run: ./scripts/fedbiomed_run network stop
