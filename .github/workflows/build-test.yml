@@ -12,6 +12,10 @@ jobs:
           miniconda-version: "latest"
       - uses: docker-practice/actions-setup-docker@master
         timeout-minutes: 12
+      - run: |
+          set -x
+          docker version
+          docker run --rm hello-world
       - name: FBM_App_Setup
         run: |
           actions/checkout@v3
