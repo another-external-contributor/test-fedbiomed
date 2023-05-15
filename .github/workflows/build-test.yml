@@ -5,12 +5,12 @@ jobs:
   build-test:
     runs-on: macos-13
     steps:
-      - name: FBM_Basic_Setup
-        uses: conda-incubator/setup-miniconda@v2
-          with:
-            auto-update-conda: true
-            python-version: 3.9
-            miniconda-version: "latest"
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-update-conda: true
+          python-version: 3.9
+          miniconda-version: "latest"
+      - name: FBM_Basic_Setup  
         run: |
           brew install docker
           colima start
