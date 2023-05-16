@@ -3,19 +3,8 @@ run-name: FBM-build-test
 on: [push]
 jobs:
   build-test:
-    runs-on: macos-13
+    runs-on: [self-hosted, macOS]
     steps:
-      - uses: conda-incubator/setup-miniconda@v2
-        with:
-          auto-update-conda: true
-          python-version: 3.9
-          miniconda-version: "latest"
-      - uses: crazy-max/ghaction-setup-docker@v1
-      - run: |
-          set -x
-          docker version
-          docker run --rm hello-world
-      
       - uses: actions/checkout@v3
       - name: FBM_App_Setup
         run: |
