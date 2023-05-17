@@ -122,7 +122,7 @@ copy_to_build_dir () {
 
   # Creat symbolik link
   if [ -n "$VERSION_TO_LINK" ]; then
-    ln -sfn $BUILD_DIR/$VERSION_TO_LINK $BUILD_DIR/latest  || { cleaning; exit 1; }
+    ln -r -sfn $BUILD_DIR/$VERSION_TO_LINK $BUILD_DIR/latest  || { cleaning; exit 1; }
   fi
 
   # Remove temprory files
