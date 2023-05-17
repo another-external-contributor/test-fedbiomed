@@ -11,6 +11,6 @@ jobs:
           ./scripts/configure_conda researcher network
           ./scripts/fedbiomed_run network
       - name: FBM_Tests  
-        run: PYTHONPATH=${PYTHONPATH:-$PWD} /usr/bin/conda run -n fedbiomed-researcher nosetests -w tests --cover-xml --cover-erase --with-coverage --cover-package=fedbiomed --with-xunit -v --process-restartworker
+        run: PYTHONPATH=${PYTHONPATH:-$PWD} conda run -n fedbiomed-researcher nosetests -w tests --cover-xml --cover-erase --with-coverage --cover-package=fedbiomed --with-xunit -v --process-restartworker
       - name: FBM_Shutdown
         run: ./scripts/fedbiomed_run network stop
