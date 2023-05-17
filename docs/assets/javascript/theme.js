@@ -65,7 +65,6 @@ $(document).ready(async function(){
             '<div class="version-box"> Version: '+selectBox+'</div></hr>'
         )
         updateVersionBox()
-        //updateMainDocsURLS()
         displayVersionWarning()
         updateHomeDocsURLS()
 
@@ -167,46 +166,26 @@ $(document).ready(async function(){
         }
     }
 
-    /**
-     * There some URLs in the MD files that are writen using absolute path.
-     * This can cause problem of opening links from the latest version even
-     * when user displays previous versions. This function updates these URLs
-     * based on active verison tag
-     */
-    function updateMainDocsURLS(){
-        let aTags = $('.main-docs a')
-        let ver_url = checkPathHasVersion(pathname)
-        if(ver_url !== false){
-            Object.keys(aTags).forEach( item => {
-                let tag = $(aTags[item])
-                let href = tag.attr('href')
-                if(href && href.startsWith('/')){
-                    tag.attr('href', '/' + ver_url + href)
-                }
-            })
-        }
-    }
-
-    /**
-     * This function update the URLs given for user documentation to latest release
-     */
-    function updateHomeDocsURLS(){
-        let aTags = $('.home-page a')
-        let ver_url = checkPathHasVersion(pathname)
-        if(ver_url === false){
-            Object.keys(aTags).forEach( item => {
-                let tag = $(aTags[item])
-                let href = tag.attr('href')
-                if(href && (href.startsWith('/getting-started') ||
-                    href.startsWith('/tutorials') ||
-                    href.startsWith('/user-guide') ||
-                    href.startsWith('/developer'))
-                ){
-                    tag.attr('href', '/latest'  + href)
-                }
-            })
-        }
-    }
+    // /**
+    //  * This function update the URLs given for user documentation to latest release
+    //  */
+    // function updateHomeDocsURLS(){
+    //     let aTags = $('.home-page a')
+    //     let ver_url = checkPathHasVersion(pathname)
+    //     if(ver_url === false){
+    //         Object.keys(aTags).forEach( item => {
+    //             let tag = $(aTags[item])
+    //             let href = tag.attr('href')
+    //             if(href && (href.startsWith('/getting-started') ||
+    //                 href.startsWith('/tutorials') ||
+    //                 href.startsWith('/user-guide') ||
+    //                 href.startsWith('/developer'))
+    //             ){
+    //                 tag.attr('href', '/latest'  + href)
+    //             }
+    //         })
+    //     }
+    // }
 
     /**
      * Event handler for version select box action. Redirect pages based on
