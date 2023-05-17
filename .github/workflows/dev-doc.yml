@@ -80,7 +80,7 @@ jobs:
     needs: deploy   
 
     steps:
-        - name: Push change to docs repo
+      - name: Push change to docs repo
         run: |
           cd build-repo
           git add .
