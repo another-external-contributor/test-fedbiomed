@@ -148,12 +148,14 @@ build_latest_version () {
   VERSION_BULD_STARTS_FROM=$(int $(echo v4.2.1 | sed 's/v//;s/\.//g' | awk '{while(length<3) $0=$0 "0"}1') || exit 1 ) || exit 1
 
   # Versions that does not have 'docs' directory
-  VERISONS_NOT_ALLOWED_TO_BUILD="v3.0 v3.1 v3.2 v3.3 v3.4 v3.5 v4.0 v4.0.1 v4.1 v4.1.1 v4.1.2 v4.2 v4.2.1 v4.2.2 v4.2.3 v4.2.4 v4.2.5"
+  VERISONS_NOT_ALLOWED_TO_BUILD="v3.0 v3.1 v3.2 v3.3 v3.4 v3.5 v4.0 v4.0.1 v4.1 v4.1.1 v4.1.2 v4.2 v4.2.1 v4.2.2"
 
 
   VERSIONS_GIT=$(echo "$VERSIONS" | sed ':a;N;$!ba;s/\n/ /g' ) || exit 1
   echo "Versions in git: $VERSIONS_GIT"
+  echo "$VERSIONS_GIT"
   BASES=( $(get_base_versions "$VERSIONS_GIT") ) || exit 1
+
 
   echo ${BASES[@]}
   LATEST_BASE="${BASES[-1]}"
@@ -271,7 +273,7 @@ while :
         shift 
         shift
         ;;
-      --buid-only-main )
+      --build-only-main )
         BUILD_ONLY_MAIN=1
         shift 1
         ;;
