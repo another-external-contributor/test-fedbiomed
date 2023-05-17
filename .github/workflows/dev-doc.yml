@@ -2,7 +2,7 @@ name: Publish docs via GitHub Pages
 on:
   push:
     branches:
-      - develop
+      - master
     
 jobs:
   build-doc:
@@ -80,7 +80,7 @@ jobs:
     needs: deploy   
 
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Push change to docs repo
         run: |
