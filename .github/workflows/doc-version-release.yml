@@ -1,7 +1,12 @@
-name: Publish docs via GitHub Pages
+name: Publish new version in documentation!
 on:
-  release:
-    types: [published]
+  push:
+    # Pattern matched against refs/tags
+    tags:        
+      - '*' 
+# on:
+#   release:
+#     types: [published]
     
 jobs:
   build-doc:
@@ -18,7 +23,7 @@ jobs:
           repository: fedbiomed/docs
           ssh-key: ${{ secrets.STORE_DOCS_REPO_KEY }}
           path: build-repo
-          
+
       - name: git
         run: |
           # setup the username and email. I tend to use 'GitHub Actions Bot' with no email by default
