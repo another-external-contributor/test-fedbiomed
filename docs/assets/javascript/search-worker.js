@@ -4,7 +4,7 @@ importScripts('./lunr.js')
  * Search index URL
  * @type {string}
  */
-const SEARCH_URL=search_index_json
+
 let SEARCH_INDEX = "waiting"
 let INDEX_CONTENT = "waiting"
 let stop = true
@@ -24,7 +24,7 @@ self.addEventListener("message", async (e) => {
             break;
         case "INDEX":
             try {
-                INDEX_CONTENT = await fetch_search_index(e.data.payload.version)
+                INDEX_CONTENT = await fetch_search_index(e.data.payload.search_index_json)
             } catch {
                 INDEX_CONTENT = false
                 console.error('Can not get search index')
@@ -54,9 +54,9 @@ self.addEventListener("message", async (e) => {
  * @param version
  * @returns {Promise<unknown>}
  */
-const fetch_search_index = () => {
+const fetch_search_index = (search_index_json) => {
     return new Promise( (resolve, reject) => {
-        fetch(SEARCH_URL)
+        fetch(search_index_json)
             .then(response => {
                 return(response.json())
             })

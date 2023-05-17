@@ -333,7 +333,7 @@ $(document).ready(async function(){
 
     // Indexing
     const SearchWorker = new Worker(search_worker_js);
-    SearchWorker.postMessage({type: 'INDEX', payload: {version: version}})
+    SearchWorker.postMessage({type: 'INDEX', payload: {search_index_json: search_index_json}})
 
     // Search worker event listener
     SearchWorker.onmessage = (message) => {
