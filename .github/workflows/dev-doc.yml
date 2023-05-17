@@ -35,20 +35,12 @@ jobs:
             python-version: '3.11' 
 
       - name: Install dependencies
-        run: pip install -r docs-requirements.txt
+        run: pip install -r envs/development/docs-requirements.txt
 
 
       - name: Build documentation
         run: scripts/docs/fedbiomed_doc.sh --build-dir build-repo
       
-      - name: Push change to docs repo
-        run: |
-          cd build-repo
-          git add .
-          git commit -m "Deploy action: documentation build/update" 
-          git push --force
-          cd ../
-
       - name: Prepare public web content
         run: |
           mkdir public
@@ -82,11 +74,16 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v2 # or the latest "vX.X.X" version tag for this action
               
-              
-              
-#      - name: Deploy 🚀
-#        uses: JamesIves/github-pages-deploy-action@v4
-#        with:
-#          ssh-key: ${{ secrets.DEPLOY_KEY }}
-#          folder: build # The folder the action should deploy.
-    
+  store-backup:
+    name: Store backup of documentation
+    # Add a dependency to the build job
+    needs: deploy   
+
+    steps:
+        - name: Push change to docs repo
+        run: |
+          cd build-repo
+          git add .
+          git commit -m "Deploy action: documentation build/update" 
+          git push --force
+          cd ../
