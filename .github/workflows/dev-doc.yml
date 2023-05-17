@@ -51,6 +51,14 @@ jobs:
         uses: actions/upload-pages-artifact@v1
         with:
           path: 'public'
+
+      - name: Push change to docs repo
+        run: |
+          cd build-repo
+          git add .
+          git commit -m "Deploy action: documentation build/update" 
+          git push --force
+          cd ../
  
   deploy:
     name: Deploy Documentation
@@ -73,19 +81,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2 # or the latest "vX.X.X" version tag for this action
-              
-  store-backup:
-    name: Store backup of documentation
-    # Add a dependency to the build job
-    needs: deploy   
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Push change to docs repo
-        run: |
-          cd build-repo
-          git add .
-          git commit -m "Deploy action: documentation build/update" 
-          git push --force
-          cd ../

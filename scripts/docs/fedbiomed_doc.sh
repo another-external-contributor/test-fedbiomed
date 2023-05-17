@@ -92,24 +92,6 @@ EOF
 }
 
 
-# Verison to build
-VERSION=$1
-
-# All available versions
-VERSIONS=`git tag -l`
-
-# Declare version whose API docs are not allowed
-VERSION_BULD_STARTS_FROM=$(int $(echo v4.2.1 | sed 's/v//;s/\.//g' | awk '{while(length<3) $0=$0 "0"}1') || exit 1 ) || exit 1
-
-# Versions that does not have 'docs' directory
-VERISONS_NOT_ALLOWED_TO_BUILD="v3.0 v3.1 v3.2 v3.3 v3.4 v3.5 v4.0 v4.0.1 v4.1 v4.1.1 v4.1.2 v4.2 v4.2.1 v4.2.2 v4.2.3 v4.2.4 v4.2.5"
-
-
-echo "Available versions: "
-echo $VERSIONS
-
-
-
 redirect_to_latest () {
 
     # Redirect base URL to latest for documentation related URI path
@@ -134,10 +116,14 @@ redirect_to_main () {
 
 copy_to_build_dir () {
 
+
+  VERSION_TO_LINK=$1
   rsync -q -av --checksum --progress $BUILD_DIR_TMP/. $BUILD_DIR --exclude CNAME --exclude .nojekyll --exclude .ssh --exclude .git --exclude .github || { cleaning; exit 1; }
 
   # Creat symbolik link
-  ln -sfn $BUILD_DIR/v$LATEST_TO_BUILD $BUILD_DIR/latest  || { cleaning; exit 1; }
+  if [ -n "$VERSION_TO_LINK" ]; then
+    ln -sfn $BUILD_DIR/$VERSION_TO_LINK $BUILD_DIR/latest  || { cleaning; exit 1; }
+  fi
 
   # Remove temprory files
   rm -rf $BUILD_DIR_TMP
@@ -146,9 +132,24 @@ copy_to_build_dir () {
 
 set_build_environmnet () {
 
-   if [ ! -d "$BUILD_DIR" ]; then 
+  if [ ! -d "$BUILD_DIR" ]; then 
     mkdir $BUILD_DIR
   fi 
+
+}
+
+
+build_latest_version () {
+
+  # All available versions
+  VERSIONS=`git tag -l`
+
+  # Declare version whose API docs are not allowed
+  VERSION_BULD_STARTS_FROM=$(int $(echo v4.2.1 | sed 's/v//;s/\.//g' | awk '{while(length<3) $0=$0 "0"}1') || exit 1 ) || exit 1
+
+  # Versions that does not have 'docs' directory
+  VERISONS_NOT_ALLOWED_TO_BUILD="v3.0 v3.1 v3.2 v3.3 v3.4 v3.5 v4.0 v4.0.1 v4.1 v4.1.1 v4.1.2 v4.2 v4.2.1 v4.2.2 v4.2.3 v4.2.4 v4.2.5"
+
 
   VERSIONS_GIT=$(echo "$VERSIONS" | sed ':a;N;$!ba;s/\n/ /g' ) || exit 1
   echo "Versions in git: $VERSIONS_GIT"
@@ -161,10 +162,9 @@ set_build_environmnet () {
   # This is to remove latest version that is already created before pushing vX.X.number
   ALREADY_CREATED=$(find $BUILD_DIR -maxdepth 1 -type d -name v$LATEST_BASE* -printf " %f") || exit 1
 
-}
 
-
-build_latest_version () {
+  echo "Available versions: "
+  echo $VERSIONS
 
   set_build_environmnet
   
@@ -172,11 +172,6 @@ build_latest_version () {
     echo "$LATEST_TO_BUILD is not allowed to build"
     exit 1
   fi
-
-
-  # Build master documentation 
-  # This is for main pages
-  mkdocs build -d "$BUILD_DIR_TMP" || { cleaning; exit 1; }
 
   # Build latest version 
   # Create a new work tree to build latest version
@@ -199,8 +194,7 @@ build_latest_version () {
 
 
   # Redirect base URL to latest for documentation related URI path
-  redirect_to_latest 
-  redirect_to_main
+  redirect_to_main "v$LATEST_TO_BUILD"
   copy_to_build_dir 
 
 
@@ -260,7 +254,6 @@ build_only_main () {
 
   # Redirect base URL to latest for documentation related URI path
   redirect_to_latest 
-  redirect_to_main
   copy_to_build_dir 
 
 
@@ -269,6 +262,7 @@ build_only_main () {
 BUILD_DIR="$BASEDIR"/build
 BUILD_DIR_TMP="$BASEDIR"/build-tmp
 BUILD_ONLY_MAIN=
+BUILD_LATEST_VERSION=
 SERVE=
 while :
   do
@@ -281,6 +275,10 @@ while :
         ;;
       --buid-only-main )
         BUILD_ONLY_MAIN=1
+        shift 1
+        ;;
+      --build-latest-version )
+        BUILD_LATEST_VERSION=1
         shift 1
         ;;
       -s | --serve | serve )
@@ -305,12 +303,17 @@ fi
 if [ ! -d $BUILD_DIR ]; then
   echo "Error: $BUILD_DIR is not existing."
 fi
-echo "$BUILD_ONLY_MAIN"
+
 
 if [ -n "$BUILD_ONLY_MAIN" ]; then 
   build_only_main
+elif [ -n "$BUILD_LATEST_VERSION" ]; then
+  build_latest_version
 else
   # Build docs -----------------------------------------------------------
+  echo "Building main documentation -----------------------------------------------------"
+  build_only_main
+  echo "Building latest versions----------------------------------------------------------"
   build_latest_version
 fi
 
