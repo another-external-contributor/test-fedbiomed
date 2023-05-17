@@ -41,7 +41,7 @@ jobs:
         run: pip install -r envs/development/docs-requirements.txt
 
       - name: Build documentation
-        run: scripts/docs/fedbiomed_doc.sh --build-dir build-repo --build-main --build-current-as "${{ env.RELEASE_VERSION }}"
+        run: scripts/docs/fedbiomed_doc.sh --build-dir build-repo --build-current-as "${{ env.RELEASE_VERSION }}"
       
       - name: Prepare public web content
         run: |
@@ -58,7 +58,7 @@ jobs:
         run: |
           cd build-repo
           git add .
-          git commit -m "Deploy action: documentation build/update" 
+          git commit -m "Deploy documentation version: ${{ env.RELEASE_VERSION }}" 
           git push --force
           cd ../
  
