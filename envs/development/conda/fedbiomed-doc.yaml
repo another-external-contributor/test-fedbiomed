@@ -1,0 +1,28 @@
+#
+# environment to create the documentation locally
+#
+# it should replace the doc-requirements.txt file
+#
+#
+#
+name: fedbiomed-doc
+
+channels:
+  - conda-forge
+
+dependencies:
+  # minimal environment
+  - python==3.8
+  - pip
+  - pip:
+      - Cython ==0.29.14
+      - black ==22.10.0
+      - mkdocs >=1.4.0
+      - mkdocs-material ==8.5.10
+      - mkdocs-jupyter  ==0.22.0
+      - ipython_genutils ==0.2.0
+      - mkdocs-minify-plugin ==0.4.1
+      - mkdocs-gen-files ==0.4.0
+      - mkdocs-section-index ==0.3.4
+      - mkdocs-literate-nav ==0.5.0
+      - mkdocstrings-python ==0.8.0
