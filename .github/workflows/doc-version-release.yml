@@ -4,9 +4,9 @@ on:
     # Pattern matched against refs/tags
     tags:        
       - '*' 
-# on:
-#   release:
-#     types: [published]
+      
+   release:
+     types: [published]
     
 jobs:
   build-doc:
