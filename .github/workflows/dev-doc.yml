@@ -79,6 +79,8 @@ jobs:
     # Add a dependency to the build job
     needs: deploy   
 
+    runs-on: ubuntu-latest
+    
     steps:
       - name: Push change to docs repo
         run: |
