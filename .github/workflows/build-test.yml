@@ -1,0 +1,16 @@
+name: FBM-build-test
+run-name: FBM-build-test
+on: [push]
+jobs:
+  build-test:
+    runs-on: [self-hosted, macOS]
+    steps:
+      - uses: actions/checkout@v3
+      - name: FBM_App_Setup
+        run: |
+          ./scripts/configure_conda researcher network
+          ./scripts/fedbiomed_run network
+      - name: FBM_Tests  
+        run: PYTHONPATH=${PYTHONPATH:-$PWD} /usr/bin/conda run -n fedbiomed-researcher nosetests -w tests --cover-xml --cover-erase --with-coverage --cover-package=fedbiomed --with-xunit -v --process-restartworker
+      - name: FBM_Shutdown
+        run: ./scripts/fedbiomed_run network stop
