@@ -10,6 +10,10 @@ jobs:
         run: |
           echo $PWD
           cd
+          pwd
+          who am i
+          ls .
+          ls ./scripts/configure_conda
           ./scripts/configure_conda researcher network
           ./scripts/fedbiomed_run network
       - name: FBM_Tests  
