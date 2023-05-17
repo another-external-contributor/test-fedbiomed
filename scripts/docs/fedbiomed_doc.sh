@@ -244,9 +244,7 @@ build_latest_version () {
 
 build_only_main () {
 
-
   set_build_environmnet
-
 
   # Build master documentation 
   # This is for main pages
