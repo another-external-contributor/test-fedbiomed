@@ -8,8 +8,6 @@ jobs:
       - uses: actions/checkout@v3
       - name: FBM_App_Setup
         run: |
-          echo $PWD
-          cd
           pwd
           who am i
           ls .
