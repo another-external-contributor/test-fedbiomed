@@ -275,7 +275,7 @@ build_latest_version () {
 }
 
 
-build_only_main () {
+build_main () {
 
   set_build_environmnet
 
@@ -292,7 +292,7 @@ build_only_main () {
 
 BUILD_DIR="$BASEDIR"/build
 BUILD_DIR_TMP="$BASEDIR"/build-tmp
-BUILD_ONLY_MAIN=
+BUILD_MAIN=
 BUILD_LATEST_VERSION=
 VERSION_TO_BUILD=
 SERVE=
@@ -305,8 +305,8 @@ while :
         shift 
         shift
         ;;
-      --build-only-main )
-        BUILD_ONLY_MAIN=1
+      --build-main )
+        BUILD_MAIN=1
         shift 1
         ;;
       --build-latest-version )
@@ -344,22 +344,23 @@ if [ ! -d $BUILD_DIR ]; then
 fi
 
 
+if [ -n "$BUILD_MAIN" ]; then 
+  echo "Building main"
+  build_main
+fi
+
 if [ -n "$VERSION_TO_BUILD" ]; then 
   echo "Building version  $VERSION_TO_BUILD"
   build_current_as "$VERSION_TO_BUILD"
 else 
-  if [ -n "$BUILD_ONLY_MAIN" ]; then 
-    build_only_main
-  elif [ -n "$BUILD_LATEST_VERSION" ]; then
+  if [ -n "$BUILD_LATEST_VERSION" ]; then
     build_latest_version
   else
-    # Build docs -----------------------------------------------------------
-    echo "Building main documentation -----------------------------------------------------"
-    build_only_main
-    echo "Building latest versions----------------------------------------------------------"
-    build_latest_version #build latest
+    echo "please specify --build-main, --build-current-as  or --build-latest-version "
+    exit
   fi
 fi
+
 
 
 

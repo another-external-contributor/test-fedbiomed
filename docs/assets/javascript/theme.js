@@ -332,7 +332,7 @@ $(document).ready(async function(){
     console.log('Current version: ', version )
 
     // Indexing
-    const SearchWorker = new Worker('/assets/javascript/search-worker.js');
+    const SearchWorker = new Worker(search_worker_js);
     SearchWorker.postMessage({type: 'INDEX', payload: {version: version}})
 
     // Search worker event listener

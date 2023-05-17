@@ -4,7 +4,7 @@ on:
     # Pattern matched against refs/tags
     tags:        
       - '*' 
-      
+
    release:
      types: [published]
     
@@ -42,7 +42,7 @@ jobs:
         run: pip install -r envs/development/docs-requirements.txt
 
       - name: Build documentation
-        run: scripts/docs/fedbiomed_doc.sh --build-dir build-repo --build-current-as "${{ env.RELEASE_VERSION }}"
+        run: scripts/docs/fedbiomed_doc.sh --build-dir build-repo --build-main --build-current-as "${{ env.RELEASE_VERSION }}"
       
       - name: Prepare public web content
         run: |
