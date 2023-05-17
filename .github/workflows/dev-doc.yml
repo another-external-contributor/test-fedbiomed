@@ -39,7 +39,7 @@ jobs:
 
 
       - name: Build documentation
-        run: scripts/docs/fedbiomed_doc.sh --build-dir build-repo
+        run: scripts/docs/fedbiomed_doc.sh --build-dir build-repo --build-only-main
       
       - name: Prepare public web content
         run: |

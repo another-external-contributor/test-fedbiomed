@@ -44,10 +44,6 @@ $(document).ready(async function(){
     let docurl;
 
 
-    // Update logo URL ----
-    let brand = $('.brand a')
-    brand.attr('href' , '/')
-
     /**
      * Gets versions JSON object and run version related functions
      */
