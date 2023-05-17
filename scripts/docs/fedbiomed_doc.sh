@@ -137,7 +137,7 @@ copy_to_build_dir () {
   rsync -q -av --checksum --progress $BUILD_DIR_TMP/. $BUILD_DIR --exclude CNAME --exclude .nojekyll --exclude .ssh --exclude .git --exclude .github || { cleaning; exit 1; }
 
   # Creat symbolik link
-  ln -sf $BUILD_DIR/v$LATEST_TO_BUILD $BUILD_DIR/latest  || { cleaning; exit 1; }
+  ln -sfn $BUILD_DIR/v$LATEST_TO_BUILD $BUILD_DIR/latest  || { cleaning; exit 1; }
 
   # Remove temprory files
   rm -rf $BUILD_DIR_TMP
@@ -192,7 +192,7 @@ build_latest_version () {
     mkdir "$BUILD_DIR_TMP"/v"$LATEST_TO_BUILD"/ || { cleaning; exit 1; }
     rsync -q -av --checksum --progress $BUILD_DIR_TMP/. $BUILD_DIR_TMP/v"$LATEST_TO_BUILD"/ --delete --exclude v"$LATEST_TO_BUILD" || { cleaning; exit 1; }
   else
-    FED_DOC_VERSION=v"$LATEST_TO_BUILD" mkdocs build --verbose -d "$BUILD_DIR_TMP"/v"$LATEST_TO_BUILD" --config-file v"$LATEST_TO_BUILD"/mkdocs.yml || { cleaning; exit 1; }
+    FED_DOC_VERSION=v"$LATEST_TO_BUILD" mkdocs build -d "$BUILD_DIR_TMP"/v"$LATEST_TO_BUILD" --config-file v"$LATEST_TO_BUILD"/mkdocs.yml || { cleaning; exit 1; }
   fi
 
   git worktree remove --force v"$LATEST_TO_BUILD" || { cleaning; exit 1; }
