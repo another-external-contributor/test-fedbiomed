@@ -34,7 +34,7 @@ jobs:
         with:
             python-version: '3.11' 
 
-      - name: Install dependencies
+      - name: Install Dependencies
         run: pip install -r envs/development/docs-requirements.txt
 
 
