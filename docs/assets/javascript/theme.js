@@ -166,27 +166,6 @@ $(document).ready(async function(){
         }
     }
 
-    // /**
-    //  * This function update the URLs given for user documentation to latest release
-    //  */
-    // function updateHomeDocsURLS(){
-    //     let aTags = $('.home-page a')
-    //     let ver_url = checkPathHasVersion(pathname)
-    //     if(ver_url === false){
-    //         Object.keys(aTags).forEach( item => {
-    //             let tag = $(aTags[item])
-    //             let href = tag.attr('href')
-    //             if(href && (href.startsWith('/getting-started') ||
-    //                 href.startsWith('/tutorials') ||
-    //                 href.startsWith('/user-guide') ||
-    //                 href.startsWith('/developer'))
-    //             ){
-    //                 tag.attr('href', '/latest'  + href)
-    //             }
-    //         })
-    //     }
-    // }
-
     /**
      * Event handler for version select box action. Redirect pages based on
      * selected version tag
