@@ -4,7 +4,7 @@ importScripts('./lunr.js')
  * Search index URL
  * @type {string}
  */
-const SEARCH_URL='/search/search_index.json'
+const SEARCH_URL=search_index_json
 let SEARCH_INDEX = "waiting"
 let INDEX_CONTENT = "waiting"
 let stop = true
@@ -30,15 +30,15 @@ self.addEventListener("message", async (e) => {
                 console.error('Can not get search index')
             }
 
-            try{
-                SEARCH_INDEX = await fetch_lunr_search_index(e.data.payload.version)
-            } catch(err) {
-                if (INDEX_CONTENT) {
-                    SEARCH_INDEX = await create_search_index(INDEX_CONTENT)
-                } else {
-                    console.error("Search index file does not exist. Can not create search index")
-                }
-            }
+            // try{
+            //     SEARCH_INDEX = await fetch_lunr_search_index(e.data.payload.version)
+            // } catch(err) {
+            //     if (INDEX_CONTENT) {
+            //         SEARCH_INDEX = await create_search_index(INDEX_CONTENT)
+            //     } else {
+            //         console.error("Search index file does not exist. Can not create search index")
+            //     }
+            // }
 
             break;
         case "STOP":
@@ -54,10 +54,9 @@ self.addEventListener("message", async (e) => {
  * @param version
  * @returns {Promise<unknown>}
  */
-const fetch_search_index = (version) => {
+const fetch_search_index = () => {
     return new Promise( (resolve, reject) => {
-        let v = version !== '' ? '/' + version : ''
-        fetch(v + '/search/search_index.json')
+        fetch(SEARCH_URL)
             .then(response => {
                 return(response.json())
             })
@@ -136,24 +135,24 @@ const parse_content = (content) => {
  * @param version
  * @returns {Promise<unknown>}
  */
-const fetch_lunr_search_index = (version) => {
-    return new Promise((resolve, reject) => {
-        let v = version !== '' ? '/' + version : ''
-        fetch(v + '/search/search_lunr_index.json')
-            .then(response => {
-                 if (response.ok) {
-                     resolve(response.json())
-                 }else{
-                     throw new Error('Can not get `search index for lunr');
-                 }
-            })
-            .then(data => {
-                SEARCH_INDEX = lunr.Index.load(data)
-                resolve(SEARCH_INDEX)
-            })
-            .catch(error => {
-                console.warn("No search index found. Search index will be created")
-                reject(false)
-            })
-    })
-}
+// const fetch_lunr_search_index = (version) => {
+//     return new Promise((resolve, reject) => {
+//         let v = version !== '' ? '/' + version : ''
+//         fetch(v + '/search/search_lunr_index.json')
+//             .then(response => {
+//                  if (response.ok) {
+//                      resolve(response.json())
+//                  }else{
+//                      throw new Error('Can not get `search index for lunr');
+//                  }
+//             })
+//             .then(data => {
+//                 SEARCH_INDEX = lunr.Index.load(data)
+//                 resolve(SEARCH_INDEX)
+//             })
+//             .catch(error => {
+//                 console.warn("No search index found. Search index will be created")
+//                 reject(false)
+//             })
+//     })
+// }
