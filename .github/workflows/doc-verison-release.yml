@@ -26,9 +26,7 @@ jobs:
           git config --global user.name "GitHub Actions Bot"
           git config --global user.email "<>"
           git fetch --tags
-          git fetch origin master
-          git checkout master
-          git tag -l
+          
       - name: Setup python
         uses: actions/setup-python@v4
         with:
