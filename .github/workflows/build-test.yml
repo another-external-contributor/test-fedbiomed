@@ -8,10 +8,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: FBM_App_Setup
         run: |
-          pwd
-          who am i
-          ls .
-          ls ./scripts/configure_conda
+          source $HOME/miniconda3/etc/profile.d/conda.sh
           ./scripts/configure_conda researcher network
           ./scripts/fedbiomed_run network
       - name: FBM_Tests  
