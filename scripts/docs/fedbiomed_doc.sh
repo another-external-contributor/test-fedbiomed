@@ -138,18 +138,75 @@ set_build_environmnet () {
 
 }
 
+create_version_json () {
+    echo "Creating versions.json..........."
+    ON_V=$(find "$BUILD_DIR" -maxdepth 1 -type d -name 'v[0-9].[0-9]*' -printf " %f" | sed -s 's/ //') || { cleaning; exit 1; }
+    E_VERSIONS=($(sort_versions  "$ON_V")) || { cleaning; exit 1; }
+
+    echo "Exsiting versions in documentation"
+    echo ${E_VERSIONS[@]}
+
+    LAST="${E_VERSIONS[${#E_VERSIONS[@]} - 1]}"
+    VERSIONS_JSON='{"versions":{'
+    for index in ${!E_VERSIONS[@]}
+    do  
+        if [ "${index}" -eq "0" ]; then
+            VERSIONS_JSON+='"latest":"'"v${E_VERSIONS[index]}"'"'
+        else
+            VERSIONS_JSON+='"'"${E_VERSIONS[index]}"'":"'"v${E_VERSIONS[index]}"'"'
+        fi
+
+        if [ "$LAST" != "${E_VERSIONS[index]}" ]; then
+            VERSIONS_JSON+=','
+        fi
+
+    done
+    VERSIONS_JSON+='} }'
+    echo $VERSIONS_JSON > "$BUILD_DIR/versions.json"
+
+
+    echo "### Building menu -----------------------------------------------"
+    echo $(python ./scripts/docs/menu.py) || exit 1 > $BUILD_DIR/menu.json 
+}
+
+build_current_as () {
+
+  VERSION=$1
+  if [ -z "$VERSION" ]; then 
+    exit 1
+  fi
+
+  BASE=$(echo "$VERSION" | sed 's/.[^.]*//3')
+  ALREADY_CREATED=$(find $BUILD_DIR -maxdepth 1 -type d -name $BASE* -printf " %f") || exit 1
+
+  mkdocs build -d "$BUILD_DIR_TMP"/"$VERSION" || { cleaning; exit 1; }
+
+
+  # Redirect base URL to latest for documentation related URI path
+  redirect_to_main 
+  copy_to_build_dir "$VERSION"
+
+
+  if [ -n "$ALREADY_CREATED" ]; then
+    echo "Removing previous version: base of $BASE.x | except latest $VERSION" 
+    for v in ${ALREADY_CREATED[@]}; do 
+      if [ "$v" != "$VERSION" ]; then
+          rm -rf $BUILD_DIR/$v
+      fi
+    done
+  fi 
+
+  create_version_json
+}
+
 
 build_latest_version () {
-
-  # All available versions
-  VERSIONS=`git tag -l`
-
-  # Declare version whose API docs are not allowed
-  VERSION_BULD_STARTS_FROM=$(int $(echo v4.2.1 | sed 's/v//;s/\.//g' | awk '{while(length<3) $0=$0 "0"}1') || exit 1 ) || exit 1
 
   # Versions that does not have 'docs' directory
   VERISONS_NOT_ALLOWED_TO_BUILD="v3.0 v3.1 v3.2 v3.3 v3.4 v3.5 v4.0 v4.0.1 v4.1 v4.1.1 v4.1.2 v4.2 v4.2.1 v4.2.2"
 
+  # All available versions
+  VERSIONS=`git tag -l`
 
   VERSIONS_GIT=$(echo "$VERSIONS" | sed ':a;N;$!ba;s/\n/ /g' ) || exit 1
   echo "Versions in git: $VERSIONS_GIT"
@@ -162,6 +219,7 @@ build_latest_version () {
   LATEST_TO_BUILD=$(get_latest_of_given_base "$VERSIONS_GIT" "$LATEST_BASE") || exit 1
   echo "Latest base:" $LATEST_BASE
   # This is to remove latest version that is already created before pushing vX.X.number
+
   ALREADY_CREATED=$(find $BUILD_DIR -maxdepth 1 -type d -name v$LATEST_BASE* -printf " %f") || exit 1
 
 
@@ -189,15 +247,15 @@ build_latest_version () {
     mkdir "$BUILD_DIR_TMP"/v"$LATEST_TO_BUILD"/ || { cleaning; exit 1; }
     rsync -q -av --checksum --progress $BUILD_DIR_TMP/. $BUILD_DIR_TMP/v"$LATEST_TO_BUILD"/ --delete --exclude v"$LATEST_TO_BUILD" || { cleaning; exit 1; }
   else
-    FED_DOC_VERSION=v"$LATEST_TO_BUILD" mkdocs build -d "$BUILD_DIR_TMP"/v"$LATEST_TO_BUILD" --config-file v"$LATEST_TO_BUILD"/mkdocs.yml || { cleaning; exit 1; }
+    mkdocs build -d "$BUILD_DIR_TMP"/v"$LATEST_TO_BUILD" --config-file v"$LATEST_TO_BUILD"/mkdocs.yml || { cleaning; exit 1; }
   fi
 
   git worktree remove --force v"$LATEST_TO_BUILD" || { cleaning; exit 1; }
 
 
   # Redirect base URL to latest for documentation related URI path
-  redirect_to_main "v$LATEST_TO_BUILD"
-  copy_to_build_dir 
+  redirect_to_main 
+  copy_to_build_dir "v$LATEST_TO_BUILD"
 
 
   if [ -n "$ALREADY_CREATED" ]; then
@@ -212,34 +270,7 @@ build_latest_version () {
     done
   fi 
 
-  echo "Creating versions.json..........."
-  ON_V=$(find "$BUILD_DIR" -maxdepth 1 -type d -name 'v[0-9].[0-9]*' -printf " %f" | sed -s 's/ //') || { cleaning; exit 1; }
-  E_VERSIONS=($(sort_versions  "$ON_V")) || { cleaning; exit 1; }
-
-  echo "Exsiting versions in documentation"
-  echo ${E_VERSIONS[@]}
-
-  LAST="${E_VERSIONS[${#E_VERSIONS[@]} - 1]}"
-  VERSIONS_JSON='{"versions":{'
-  for index in ${!E_VERSIONS[@]}
-  do  
-      if [ "${index}" -eq "0" ]; then
-          VERSIONS_JSON+='"latest":"'"v${E_VERSIONS[index]}"'"'
-      else
-          VERSIONS_JSON+='"'"${E_VERSIONS[index]}"'":"'"v${E_VERSIONS[index]}"'"'
-      fi
-
-      if [ "$LAST" != "${E_VERSIONS[index]}" ]; then
-          VERSIONS_JSON+=','
-      fi
-
-  done
-  VERSIONS_JSON+='} }'
-  echo $VERSIONS_JSON > "$BUILD_DIR/versions.json"
-
-
-  echo "### Building menu -----------------------------------------------"
-  echo $(python ./scripts/docs/menu.py) || exit 1 > $BUILD_DIR/menu.json  
+  create_version_json
 
 }
 
@@ -263,6 +294,7 @@ BUILD_DIR="$BASEDIR"/build
 BUILD_DIR_TMP="$BASEDIR"/build-tmp
 BUILD_ONLY_MAIN=
 BUILD_LATEST_VERSION=
+VERSION_TO_BUILD=
 SERVE=
 while :
   do
@@ -280,6 +312,13 @@ while :
       --build-latest-version )
         BUILD_LATEST_VERSION=1
         shift 1
+        ;;
+
+      --build-current-as ) 
+        VERSION_TO_BUILD=$2
+        shift
+        shift
+
         ;;
       -s | --serve | serve )
         SERVE=1
@@ -305,17 +344,25 @@ if [ ! -d $BUILD_DIR ]; then
 fi
 
 
-if [ -n "$BUILD_ONLY_MAIN" ]; then 
-  build_only_main
-elif [ -n "$BUILD_LATEST_VERSION" ]; then
-  build_latest_version
-else
-  # Build docs -----------------------------------------------------------
-  echo "Building main documentation -----------------------------------------------------"
-  build_only_main
-  echo "Building latest versions----------------------------------------------------------"
-  build_latest_version
+if [ -n "$VERSION_TO_BUILD" ]; then 
+  echo "Building version  $VERSION_TO_BUILD"
+  build_current_as "$VERSION_TO_BUILD"
+else 
+  if [ -n "$BUILD_ONLY_MAIN" ]; then 
+    build_only_main
+  elif [ -n "$BUILD_LATEST_VERSION" ]; then
+    build_latest_version
+  else
+    # Build docs -----------------------------------------------------------
+    echo "Building main documentation -----------------------------------------------------"
+    build_only_main
+    echo "Building latest versions----------------------------------------------------------"
+    build_latest_version #build latest
+  fi
 fi
+
+
+
 
 
 
