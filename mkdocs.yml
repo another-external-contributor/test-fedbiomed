@@ -50,12 +50,12 @@ nav:
       - 'User Documentation': './getting-started/what-is-fedbiomed.md'
       - 'About': './pages/about-us.md'
       - 'More' :
-        - 'Funding' : '#funding'
+        - 'Funding' : './#funding'
         - 'News' : './news/index.md'
-        - 'Contributors': '#contributors'
-        - 'Users': '#users'
+        - 'Contributors': './#contributors'
+        - 'Users': './#users'
         - 'Roadmap': './pages/roadmap.md'
-        - 'Contact Us' : '#contact-us'
+        - 'Contact Us' : './#contact-us'
   - Docs:
     - 'Getting Started':
       - "What's Fed-BioMed": './getting-started/what-is-fedbiomed.md'
