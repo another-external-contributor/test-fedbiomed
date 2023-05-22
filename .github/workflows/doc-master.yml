@@ -46,7 +46,7 @@ jobs:
           cd build-repo
           git add .
           git commit -m "Deploy action: documentation build/update" 
-          git pull --no-edit --ff-only  &&  git commit --amend -m "Pulling recent changes"
+          git pull --no-edit --rebase  &&  git commit --amend -m "Pulling recent changes"
           git push
           cd ../
 
