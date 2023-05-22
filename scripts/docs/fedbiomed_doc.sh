@@ -105,11 +105,17 @@ redirect_to_latest () {
 
 redirect_to_main () {
 
+  if [ -z "$1" ];
+    exit "No version is provided for function redirect to main"
+  fi
+
+  VERSION_FOR_REDIRECTION=$1
+
     # Redirect version base files
   FILES_TO_REDIRECT='index.html pages support news'
   for r in ${FILES_TO_REDIRECT}; do 
       echo "Creating redirection for $r"
-      ./scripts/docs/redirect.py --source $BUILD_DIR_TMP/v"$LATEST_TO_BUILD"/$r --base $BUILD_DIR_TMP -buri "../" || { cleaning; exit 1; }
+      ./scripts/docs/redirect.py --source $BUILD_DIR_TMP/"$VERSION_FOR_REDIRECTION"/$r --base $BUILD_DIR_TMP -buri "../" || { cleaning; exit 1; }
   done
 
 }
@@ -173,6 +179,7 @@ build_current_as () {
 
   VERSION=$1
   if [ -z "$VERSION" ]; then 
+    echo "Please give version name to build."
     exit 1
   fi
 
@@ -196,7 +203,7 @@ build_current_as () {
     done
   fi 
 
-  create_version_json
+  create_version_json "$VERSION"
 }
 
 
@@ -254,7 +261,7 @@ build_latest_version () {
 
 
   # Redirect base URL to latest for documentation related URI path
-  redirect_to_main 
+  redirect_to_main "v$LATEST_TO_BUILD"
   copy_to_build_dir "v$LATEST_TO_BUILD"
 
 
