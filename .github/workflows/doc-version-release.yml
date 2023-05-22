@@ -48,7 +48,7 @@ jobs:
           cd build-repo
           git add .
           git commit -m "Deploy documentation version: ${{ env.RELEASE_VERSION }}" 
-          git pull --no-edit  &&  git commit --amend -m "Pulling recent changes" 
+          git pull --no-edit --ff-only &&  git commit --amend -m "Pulling recent changes" 
           git push
           cd ../
 
