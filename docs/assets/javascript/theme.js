@@ -38,6 +38,16 @@ function joinUrl (base, path) {
   }
 
 
+  var getAbsoluteUrl = (function() {
+    var a;
+    return function(url) {
+        if(!a) a = document.createElement('a');
+        a.href = url;
+        return a.pathname;
+    }
+    })();
+
+
 /**
  * Do redirection if doc url does not start with version number
  */
@@ -191,9 +201,10 @@ $(document).ready(async function(){
         if (!v){
             alert("Can not display chosen version.")
         }else{
-            path = pathname.replace(v, version)
-            path = path + base_url
-            window.location.replace( origin + path);
+            let abs_url = getAbsoluteUrl(base_url)
+            let location = pathname.replace(abs_url, '')
+            let version_url = abs_url.replace(v, version) + location
+            window.location.replace( version_url);
         }
     })
 
