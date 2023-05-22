@@ -24,6 +24,8 @@
       {% endif %}
     {% endblock %}
 
+    <link rel="icon" type="image/x-icon" href="{{'/favicon.ico' | url}}">
+
       <!-- Page description -->
     {% if page and page.meta and page.meta.description %}
         <meta name="description" content="{{ page.meta.description }}" />
