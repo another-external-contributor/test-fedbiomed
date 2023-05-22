@@ -40,7 +40,16 @@ jobs:
 
       - name: Build documentation
         run: scripts/docs/fedbiomed_doc.sh --build-dir build-repo --build-main
-      
+
+      - name: Push change to docs repo
+        run: |
+          cd build-repo
+          git add .
+          git commit -m "Deploy action: documentation build/update" 
+          git pull --no-edit  &&  git commit --amend -m "Pulling recent changes"
+          git push
+          cd ../
+          
       - name: Prepare public web content
         run: |
           mkdir public
@@ -52,15 +61,7 @@ jobs:
         with:
           path: 'public'
 
-      - name: Push change to docs repo
-        run: |
-          cd build-repo
-          git pull --no-edit  &&  git commit --amend -m "Pulling recent changes"
-          git add .
-          git commit -m "Deploy action: documentation build/update" 
-          git push --force
-          cd ../
- 
+
   deploy:
     name: Deploy Documentation
     # Add a dependency to the build job
