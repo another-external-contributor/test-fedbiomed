@@ -20,6 +20,25 @@ const check_is_docs = () => {
 let is_docs = check_is_docs()
 
 /**
+ * Joins base and given relative path
+ * @param {string} base 
+ * @param {string} path 
+ * @returns 
+ */
+function joinUrl (base, path) {
+    if (path.substring(0, 1) === "/") {
+      // path starts with `/`. Thus it is absolute.
+      return path;
+    }
+    if (base.substring(base.length-1) === "/") {
+      // base ends with `/`
+      return base + path;
+    }
+    return base + "/" + path;
+  }
+
+
+/**
  * Do redirection if doc url does not start with version number
  */
 if(is_docs) {
@@ -431,7 +450,7 @@ $(document).ready(async function(){
                 let raw_location = "/"+ result.location
                 is_doc_url = doc_paths.some((path) => { return raw_location.startsWith(path)})
                 version_suffix = is_doc_url ? '/' + version : '/'
-                content += '<li><a href="'+result.location+'"><h4>'+result.title+'</h4><p>'+
+                content += '<li><a href="'+ joinUrl(base_url, result.location)+'"><h4>'+result.title+'</h4><p>'+
                     result.text.substring(0, 100) + "...</p></a></li>"
             })
         }else{
