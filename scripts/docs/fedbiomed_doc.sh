@@ -105,8 +105,9 @@ redirect_to_latest () {
 
 redirect_to_main () {
 
-  if [ -z "$1" ]; then
-    exit "No version is provided for function redirect to main"
+  if [ ! -n "$1" ]; then
+    echo "No version is provided for function redirect to main"
+    exit 1
   fi
 
   VERSION_FOR_REDIRECTION=$1
