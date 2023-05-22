@@ -105,7 +105,7 @@ redirect_to_latest () {
 
 redirect_to_main () {
 
-  if [ -z "$1" ];
+  if [ -z "$1" ]; then
     exit "No version is provided for function redirect to main"
   fi
 
