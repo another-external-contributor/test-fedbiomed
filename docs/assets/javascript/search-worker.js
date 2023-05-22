@@ -25,21 +25,11 @@ self.addEventListener("message", async (e) => {
         case "INDEX":
             try {
                 INDEX_CONTENT = await fetch_search_index(e.data.payload.search_index_json)
+                SEARCH_INDEX = await create_search_index(INDEX_CONTENT)
             } catch {
                 INDEX_CONTENT = false
                 console.error('Can not get search index')
             }
-
-            try{
-                SEARCH_INDEX = await fetch_lunr_search_index(e.data.payload.version)
-            } catch(err) {
-                if (INDEX_CONTENT) {
-                    SEARCH_INDEX = await create_search_index(INDEX_CONTENT)
-                } else {
-                    console.error("Search index file does not exist. Can not create search index")
-                }
-            }
-
             break;
         case "STOP":
             stop = true

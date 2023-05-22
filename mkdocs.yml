@@ -10,24 +10,8 @@ theme:
   name: material
   logo: assets/img/fedbiomed-logo-small.png
   custom_dir: docs/.templates/theme/
-
-  include_search_page: false
-  search_index_only: true
-
   language: en
-  features: 
-    - content.code.annotate
-    - navigation.tabs
-    - navigation.top
-    - content.code.annotate
-    - navigation.indexes
-    - navigation.sections
-    - navigation.tabs
-    - navigation.top
-    - navigation.tracking
-    - search.highlight
-    - search.share
-    - search.suggest
+
 
 nav:
   - Top-Bar:
@@ -255,6 +239,7 @@ markdown_extensions:
 plugins:
   - search:
       lang: en
+      indexing: 'full'
   - mkdocs-jupyter:
       include_source: True
   - mkdocstrings:
