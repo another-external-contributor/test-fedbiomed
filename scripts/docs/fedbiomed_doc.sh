@@ -191,7 +191,7 @@ build_current_as () {
 
 
   # Redirect base URL to latest for documentation related URI path
-  redirect_to_main 
+  redirect_to_main "$VERSION"
   copy_to_build_dir "$VERSION"
 
 
