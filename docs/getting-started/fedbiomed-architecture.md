@@ -3,6 +3,7 @@ title: Federated Training architecture
 description: This page presents the architecture of Fed-BioMed.
 keywords: Federated Learning, architecture
 ---
+# Samll changes
 
 # Fedbiomed Main components
 
