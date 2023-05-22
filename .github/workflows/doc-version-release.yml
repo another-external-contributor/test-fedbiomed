@@ -57,9 +57,10 @@ jobs:
       - name: Push change to docs repo
         run: |
           cd build-repo
+          git pull --no-edit  &&  git commit --amend -m "Pulling recent changes" 
           git add .
           git commit -m "Deploy documentation version: ${{ env.RELEASE_VERSION }}" 
-          git push --force
+          git push
           cd ../
  
   deploy:
