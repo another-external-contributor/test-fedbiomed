@@ -218,9 +218,6 @@ create_version_json () {
     VERSIONS_JSON+='} }'
     echo $VERSIONS_JSON > "$BUILD_DIR/versions.json"
 
-
-    echo "### Building menu -----------------------------------------------"
-    echo $(python ./scripts/docs/menu.py) || exit 1 > $BUILD_DIR/menu.json 
 }
 
 build_current_as () {
@@ -432,7 +429,7 @@ if [ -n "$VERSION_TO_BUILD" ]; then
   build_given_version "$VERSION_TO_BUILD"
 
 elif [ -n "$VERSION_TO_BUILD_AS" ]; then
-  
+
   echo "Building current local as version $VERSION_TO_BUILD_AS"
   build_current_as "$VERSION_TO_BUILD_AS"
 
