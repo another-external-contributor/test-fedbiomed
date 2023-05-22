@@ -22,9 +22,10 @@
       {% else %}
         <title>{{ config.site_name }}</title>
       {% endif %}
+       <link rel="icon" type="image/x-icon" href="{{'./favicon.ico' | url}}">
     {% endblock %}
 
-    <link rel="icon" type="image/x-icon" href="{{'/favicon.ico' | url}}">
+   
 
       <!-- Page description -->
     {% if page and page.meta and page.meta.description %}
