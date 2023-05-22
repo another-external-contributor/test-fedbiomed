@@ -158,9 +158,9 @@ $(document).ready(async function(){
         for(let i=0; i<Object.keys(ver).length; i++){
             let key = Object.keys(ver)[i]
             let vers = ver[key]
-            if(path.startsWith('/latest') | path.includes('/latest/') ){
+            if(path.startsWith('/latest') || path.includes('/latest/') ){
                 return 'latest'
-            }else if( path.startsWith('/' + vers.toString()) | path.includes('/' +  vers.toString() + '/') ){
+            }else if( path.startsWith('/' + vers.toString()) || path.includes('/' +  vers.toString() + '/') ){
                 return vers.toString()
             }
         }
