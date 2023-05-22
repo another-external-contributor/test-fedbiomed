@@ -46,7 +46,11 @@ jobs:
           cd build-repo
           git add .
           git commit -m "Deploy action: documentation build/update" 
-          git pull --no-edit --no-rebase  &&  git commit -a -m "Pulling recent changes"
+          git pull --no-edit --no-rebase  
+          if [ ! git commit -a -m "Pulling recent changes" ]; then
+            echo "o changes to commit"
+          fi
+          git push
           git push
           cd ../
 
