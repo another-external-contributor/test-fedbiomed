@@ -431,7 +431,7 @@ $(document).ready(async function(){
                 let raw_location = "/"+ result.location
                 is_doc_url = doc_paths.some((path) => { return raw_location.startsWith(path)})
                 version_suffix = is_doc_url ? '/' + version : '/'
-                content += '<li><a href="'+version_suffix+result.location+'"><h4>'+result.title+'</h4><p>'+
+                content += '<li><a href="'+result.location+'"><h4>'+result.title+'</h4><p>'+
                     result.text.substring(0, 100) + "...</p></a></li>"
             })
         }else{
