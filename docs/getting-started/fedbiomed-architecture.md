@@ -8,6 +8,8 @@ keywords: Federated Learning, architecture
 
 # A small change
 
+### Hello world 
+
 Fed-BioMed has three main components ensuring the correct execution of federated learning algorithms.These components 
 are `Node`, `Researcher` and `Network`, and are defined in the following sections:
 
