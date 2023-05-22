@@ -187,10 +187,14 @@ $(document).ready(async function(){
      */
     $(document).on('change','#version', function() {
         let version = $(this).val();
-        path = pathname.replace(v, version)
-        path = path + base_url
-        window.location.replace( origin + path);
-
+        let v = checkPathHasVersion(pathname)
+        if (!v){
+            alert("Can not display chosen version.")
+        }else{
+            path = pathname.replace(v, version)
+            path = path + base_url
+            window.location.replace( origin + path);
+        }
     })
 
 
