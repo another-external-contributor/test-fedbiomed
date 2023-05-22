@@ -43,10 +43,6 @@ jobs:
       - name: Build documentation
         run: scripts/docs/fedbiomed_doc.sh --build-dir build-repo --build-current-as "${{ env.RELEASE_VERSION }}"
       
-      - name: Check changes
-        id: changes
-        run: cd build_repo && git status --porcelain && cd ../
-
       - name: Commit changes
         run: |
           cd build-repo
@@ -58,10 +54,6 @@ jobs:
           fi
           git push
           cd ../
-
-      - name: Push changes
-        if: steps.changes.outputs
-          
 
       - name: Prepare public web content
         run: |
