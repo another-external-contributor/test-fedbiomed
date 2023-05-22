@@ -158,9 +158,9 @@ $(document).ready(async function(){
         for(let i=0; i<Object.keys(ver).length; i++){
             let key = Object.keys(ver)[i]
             let vers = ver[key]
-            if(path.startsWith('/latest')){
+            if(path.startsWith('/latest') | path.includes('/latest/') ){
                 return 'latest'
-            }else if( path.startsWith('/' + vers.toString())){
+            }else if( path.startsWith('/' + vers.toString()) | path.includes('/' +  vers.toString() + '/') ){
                 return vers.toString()
             }
         }
@@ -187,12 +187,8 @@ $(document).ready(async function(){
      */
     $(document).on('change','#version', function() {
         let version = $(this).val();
-        let v = checkPathHasVersion(pathname)
-        if(v !== false){
-            path = pathname.replace(v, version)
-        }else{
-            path = '/' + version + pathname
-        }
+        path = pathname.replace(v, version)
+        path = path + base_url
         window.location.replace( origin + path);
 
     })
