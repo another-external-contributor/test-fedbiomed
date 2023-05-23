@@ -15,6 +15,7 @@ on:
 
 jobs:
   paths-filter:
+    name: filter-docs-related-file-changes
     runs-on: ubuntu-latest
     outputs:
       is_doc_related_file_changed: ${{ steps.filter.outputs.docs }}
@@ -51,7 +52,7 @@ jobs:
 
 
   build:
-    name: Testing build of documentation
+    name: test-documentation-build
     runs-on: ubuntu-latest
     needs: paths-filter
     # if: ${{ github.event_name == 'push' || github.event.pull_request.opened == true }}
