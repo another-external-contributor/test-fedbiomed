@@ -23,21 +23,29 @@ jobs:
     - uses: dorny/paths-filter@v2
       id: filter
       with:
+        base: ${{ github.ref }}
         filters: |
-          docs:
+          docs: &shared
             - 'fedbiomed/**'
             - 'scripts/docs/**'
             - 'docs/**'
             - 'envs/development/**'
             - 'mkdocs.yml'
             - 'README.md'
+          addedOrModified:
+            - added|modified: '**'
+          allChanges: 
+            - added|deleted|modified: '**'
+          addedOrModifiedAnchors:
+            - added|modified: *docs
+
     # run only if 'workflows' files were changed
-    - name: Test changes
+    - name: Display docs related changes changes
       if: steps.filter.outputs.docs == 'true'
       run: echo true
 
     # run only if not 'workflows' files were changed
-    - name: not workflow tests
+    - name: No changes related to docs
       if: steps.filter.outputs.docs != 'true'
       run: echo false
 
@@ -47,7 +55,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: paths-filter
     # if: ${{ github.event_name == 'push' || github.event.pull_request.opened == true }}
-    if: ${{ needs.paths-filter.outputs.is_doc_related_file_changed == true && ( github.event_name == 'push' || github.event.pull_request.opened == true ) }} 
+    if: ${{ needs.paths-filter.outputs.is_doc_related_file_changed == 'true' && ( github.event_name == 'push' || github.event.pull_request.opened == 'true' ) }} 
     steps:
       - name: Checkout to repository
         uses: actions/checkout@v3
