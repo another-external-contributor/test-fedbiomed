@@ -10,7 +10,7 @@ on:
       - gui/**
       - notebooks/**
       - tests/**
-    pull_request:
+  pull_request:
       types:
         - opened
       branches:
