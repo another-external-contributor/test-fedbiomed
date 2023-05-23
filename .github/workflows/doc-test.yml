@@ -10,7 +10,6 @@ on:
         - develop
 
 jobs:
-
   paths-filter:
     runs-on: ubuntu-latest
     outputs:
