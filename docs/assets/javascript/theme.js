@@ -4,7 +4,7 @@ let origin   = window.location.origin;
 
 let doc_paths = ['/getting-started', '/tutorials', '/user-guide', '/developer']
 let is_version_available
-
+let deprecated_versions = ["v4.3", "v4.2", "v4.1", "v4.", "v3.5", "v3.4", "v3.3", "v3.2", "v3.2"]
 /**
  * Check current page is documentation
  * @returns {boolean}
@@ -196,16 +196,26 @@ $(document).ready(async function(){
      * selected version tag
      */
     $(document).on('change','#version', function() {
+
         let version = $(this).val();
         let v = checkPathHasVersion(pathname)
-        if (!v){
-            alert("Can not display chosen version.")
-        }else{
-            let abs_url = getAbsoluteUrl(base_url)
-            let location = pathname.replace(abs_url, '')
-            let version_url = abs_url.replace(v, version) + location
+        let abs_url = getAbsoluteUrl(base_url)
+        let version_url
+
+        if( deprecated_versions.includes(version) ){
+            version_url = abs_url.replace(v, version) 
             window.location.replace( version_url);
+        }else{
+            if (!v){
+                alert("Can not display chosen version.")
+            }else{
+                let abs_url = getAbsoluteUrl(base_url)
+                let location = pathname.replace(abs_url, '')
+                let version_url = abs_url.replace(v, version) + location
+                window.location.replace( version_url);
+            }
         }
+
     })
 
 
