@@ -1,9 +1,6 @@
 name: FBM-build-test
 run-name: FBM-build-test
-on:   
-  pull_request:
-    types:
-      - opened
+on: [push]
 jobs:
   build-test:
     runs-on: [self-hosted, macOS]
