@@ -4,7 +4,7 @@ importScripts('./lunr.js')
  * Search index URL
  * @type {string}
  */
-const SEARCH_URL='/search/search_index.json'
+
 let SEARCH_INDEX = "waiting"
 let INDEX_CONTENT = "waiting"
 let stop = true
@@ -24,22 +24,12 @@ self.addEventListener("message", async (e) => {
             break;
         case "INDEX":
             try {
-                INDEX_CONTENT = await fetch_search_index(e.data.payload.version)
+                INDEX_CONTENT = await fetch_search_index(e.data.payload.search_index_json)
+                SEARCH_INDEX = await create_search_index(INDEX_CONTENT)
             } catch {
                 INDEX_CONTENT = false
                 console.error('Can not get search index')
             }
-
-            try{
-                SEARCH_INDEX = await fetch_lunr_search_index(e.data.payload.version)
-            } catch(err) {
-                if (INDEX_CONTENT) {
-                    SEARCH_INDEX = await create_search_index(INDEX_CONTENT)
-                } else {
-                    console.error("Search index file does not exist. Can not create search index")
-                }
-            }
-
             break;
         case "STOP":
             stop = true
@@ -54,10 +44,9 @@ self.addEventListener("message", async (e) => {
  * @param version
  * @returns {Promise<unknown>}
  */
-const fetch_search_index = (version) => {
+const fetch_search_index = (search_index_json) => {
     return new Promise( (resolve, reject) => {
-        let v = version !== '' ? '/' + version : ''
-        fetch(v + '/search/search_index.json')
+        fetch(search_index_json)
             .then(response => {
                 return(response.json())
             })

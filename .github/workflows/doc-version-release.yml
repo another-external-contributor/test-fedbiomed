@@ -1,58 +1,72 @@
-name: Deploy github pages
+name: Publish new version in documentation!
 on:
   push:
     # Pattern matched against refs/tags
     tags:        
       - '*' 
-
+  release:
+    types: [published]
+    
 jobs:
   build-doc:
-    name: Build and Re-store/Upadate Documentation
+    name: Publish version in documentation
     environment: github-pages
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout to repositort
+      - name: Checkout to repository
         uses: actions/checkout@v3
       
-      - name: Checkout do Docs repository
-        uses: actions/checkout@v3
-
-      - name: Checkout tools repo
+      - name: Checkout to fedbiomed/docs (storage)
         uses: actions/checkout@v3
         with:
           repository: fedbiomed/docs
           ssh-key: ${{ secrets.STORE_DOCS_REPO_KEY }}
-          path: build
+          path: build-repo
+
       - name: git
         run: |
           # setup the username and email. I tend to use 'GitHub Actions Bot' with no email by default
           git --version
-          git config user.name "GitHub Actions Bot"
-          git config user.email "<>"
-          git fetch --tags
-          git tag -l
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "<>"
+      - name: Set env
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+
       - name: Setup python
         uses: actions/setup-python@v4
         with:
             python-version: '3.11' 
-      - name: Check directory
-        run: |
-          ls -la ./
-          ls -la ./build
-      - name: Install dependencies
-        run: pip install -r docs-requirements.txt
-      - name: Check directory
-        run: ls -la  
-      # Build documentation 
+
+      - name: Install Dependencies
+        run: pip install -r envs/development/docs-requirements.txt
+
       - name: Build documentation
-        run: scripts/docs/build-git.sh build
+        run: scripts/docs/fedbiomed_doc.sh --build-dir build-repo --build-current-as "${{ env.RELEASE_VERSION }}"
       
+      - name: Commit changes
+        run: |
+          cd build-repo
+          git add .
+          git commit -m "Deploy documentation version: ${{ env.RELEASE_VERSION }}" 
+          git pull --no-edit --no-rebase  
+          if [ ! git commit -a -m "Pulling recent changes" ]; then
+            echo "o changes to commit"
+          fi
+          git push
+          cd ../
+
+      - name: Prepare public web content
+        run: |
+          mkdir public
+          rsync -q -av --checksum --progress build-repo/. public/ --exclude CNAME --exclude .nojekyll --exclude .ssh --exclude .git --exclude .github
+
       # Upload built documentation source code
       - name: Upload Artificat
         uses: actions/upload-pages-artifact@v1
         with:
-          path: 'build'
- 
+          path: 'public'
+
+
   deploy:
     name: Deploy Documentation
     # Add a dependency to the build job

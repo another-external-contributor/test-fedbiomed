@@ -4,7 +4,7 @@ let origin   = window.location.origin;
 
 let doc_paths = ['/getting-started', '/tutorials', '/user-guide', '/developer']
 let is_version_available
-
+let deprecated_versions = ["v4.3", "v4.2", "v4.1", "v4.", "v3.5", "v3.4", "v3.3", "v3.2", "v3.2"]
 /**
  * Check current page is documentation
  * @returns {boolean}
@@ -18,6 +18,35 @@ const check_is_docs = () => {
 }
 
 let is_docs = check_is_docs()
+
+/**
+ * Joins base and given relative path
+ * @param {string} base 
+ * @param {string} path 
+ * @returns 
+ */
+function joinUrl (base, path) {
+    if (path.substring(0, 1) === "/") {
+      // path starts with `/`. Thus it is absolute.
+      return path;
+    }
+    if (base.substring(base.length-1) === "/") {
+      // base ends with `/`
+      return base + path;
+    }
+    return base + "/" + path;
+  }
+
+
+  var getAbsoluteUrl = (function() {
+    var a;
+    return function(url) {
+        if(!a) a = document.createElement('a');
+        a.href = url;
+        return a.pathname;
+    }
+    })();
+
 
 /**
  * Do redirection if doc url does not start with version number
@@ -44,10 +73,6 @@ $(document).ready(async function(){
     let docurl;
 
 
-    // Update logo URL ----
-    let brand = $('.brand a')
-    brand.attr('href' , '/')
-
     /**
      * Gets versions JSON object and run version related functions
      */
@@ -65,7 +90,6 @@ $(document).ready(async function(){
             '<div class="version-box"> Version: '+selectBox+'</div></hr>'
         )
         updateVersionBox()
-        //updateMainDocsURLS()
         displayVersionWarning()
         updateHomeDocsURLS()
 
@@ -144,9 +168,9 @@ $(document).ready(async function(){
         for(let i=0; i<Object.keys(ver).length; i++){
             let key = Object.keys(ver)[i]
             let vers = ver[key]
-            if(path.startsWith('/latest')){
+            if(path.startsWith('/latest') || path.includes('/latest/') ){
                 return 'latest'
-            }else if( path.startsWith('/' + vers.toString())){
+            }else if( path.startsWith('/' + vers.toString()) || path.includes('/' +  vers.toString() + '/') ){
                 return vers.toString()
             }
         }
@@ -168,59 +192,29 @@ $(document).ready(async function(){
     }
 
     /**
-     * There some URLs in the MD files that are writen using absolute path.
-     * This can cause problem of opening links from the latest version even
-     * when user displays previous versions. This function updates these URLs
-     * based on active verison tag
-     */
-    function updateMainDocsURLS(){
-        let aTags = $('.main-docs a')
-        let ver_url = checkPathHasVersion(pathname)
-        if(ver_url !== false){
-            Object.keys(aTags).forEach( item => {
-                let tag = $(aTags[item])
-                let href = tag.attr('href')
-                if(href && href.startsWith('/')){
-                    tag.attr('href', '/' + ver_url + href)
-                }
-            })
-        }
-    }
-
-    /**
-     * This function update the URLs given for user documentation to latest release
-     */
-    function updateHomeDocsURLS(){
-        let aTags = $('.home-page a')
-        let ver_url = checkPathHasVersion(pathname)
-        if(ver_url === false){
-            Object.keys(aTags).forEach( item => {
-                let tag = $(aTags[item])
-                let href = tag.attr('href')
-                if(href && (href.startsWith('/getting-started') ||
-                    href.startsWith('/tutorials') ||
-                    href.startsWith('/user-guide') ||
-                    href.startsWith('/developer'))
-                ){
-                    tag.attr('href', '/latest'  + href)
-                }
-            })
-        }
-    }
-
-    /**
      * Event handler for version select box action. Redirect pages based on
      * selected version tag
      */
     $(document).on('change','#version', function() {
+
         let version = $(this).val();
         let v = checkPathHasVersion(pathname)
-        if(v !== false){
-            path = pathname.replace(v, version)
+        let abs_url = getAbsoluteUrl(base_url)
+        let version_url
+
+        if( deprecated_versions.includes(version) ){
+            version_url = abs_url.replace(v, version) 
+            window.location.replace( version_url);
         }else{
-            path = '/' + version + pathname
+            if (!v){
+                alert("Can not display chosen version.")
+            }else{
+                let abs_url = getAbsoluteUrl(base_url)
+                let location = pathname.replace(abs_url, '')
+                let version_url = abs_url.replace(v, version) + location
+                window.location.replace( version_url);
+            }
         }
-        window.location.replace( origin + path);
 
     })
 
@@ -378,8 +372,8 @@ $(document).ready(async function(){
     console.log('Current version: ', version )
 
     // Indexing
-    const SearchWorker = new Worker('/assets/javascript/search-worker.js');
-    SearchWorker.postMessage({type: 'INDEX', payload: {version: version}})
+    const SearchWorker = new Worker(search_worker_js);
+    SearchWorker.postMessage({type: 'INDEX', payload: {search_index_json: search_index_json}})
 
     // Search worker event listener
     SearchWorker.onmessage = (message) => {
@@ -477,7 +471,7 @@ $(document).ready(async function(){
                 let raw_location = "/"+ result.location
                 is_doc_url = doc_paths.some((path) => { return raw_location.startsWith(path)})
                 version_suffix = is_doc_url ? '/' + version : '/'
-                content += '<li><a href="'+version_suffix+result.location+'"><h4>'+result.title+'</h4><p>'+
+                content += '<li><a href="'+ joinUrl(base_url, result.location)+'"><h4>'+result.title+'</h4><p>'+
                     result.text.substring(0, 100) + "...</p></a></li>"
             })
         }else{

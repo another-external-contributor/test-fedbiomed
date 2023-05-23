@@ -1,12 +1,12 @@
-name: Publish docs via GitHub Pages
+name: Publish changes in pushed to master
 on:
   push:
     branches:
-      - develop
+      - master
     
 jobs:
   build-doc:
-    name: Build and Re-store/Upadate Documentation
+    name: Publish main documentation
     environment: github-pages
     runs-on: ubuntu-latest
     steps:
@@ -39,8 +39,21 @@ jobs:
 
 
       - name: Build documentation
-        run: scripts/docs/fedbiomed_doc.sh --build-dir build-repo
-      
+        run: scripts/docs/fedbiomed_doc.sh --build-dir build-repo --build-main
+
+      - name: Push change to docs repo
+        run: |
+          cd build-repo
+          git add .
+          git commit -m "Deploy action: documentation build/update" 
+          git pull --no-edit --no-rebase  
+          if [ ! git commit -a -m "Pulling recent changes" ]; then
+            echo "o changes to commit"
+          fi
+          git push
+          git push
+          cd ../
+
       - name: Prepare public web content
         run: |
           mkdir public
@@ -51,7 +64,8 @@ jobs:
         uses: actions/upload-pages-artifact@v1
         with:
           path: 'public'
- 
+
+
   deploy:
     name: Deploy Documentation
     # Add a dependency to the build job
@@ -73,19 +87,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2 # or the latest "vX.X.X" version tag for this action
-              
-  store-backup:
-    name: Store backup of documentation
-    # Add a dependency to the build job
-    needs: deploy   
-
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Push change to docs repo
-        run: |
-          cd build-repo
-          git add .
-          git commit -m "Deploy action: documentation build/update" 
-          git push --force
-          cd ../
