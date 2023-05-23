@@ -7,9 +7,6 @@ push test
 Another update
 
 >>> A small change for merge request
->>> A small change for merge request
->>> A small change for merge request
->>> A small change for merge request
 
 
 
