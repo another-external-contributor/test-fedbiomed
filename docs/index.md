@@ -6,6 +6,7 @@ keywords: Fed-BioMed, Federated Learning, Machine Learning
 
 ## Open, Transparent and Trusted Federated Learning for Real-world Healthcare Applications
 
+### Small change
 What is Fed-BioMed?
 
 Fed-BioMed is an open-source research and development initiative aiming at translating federated learning (FL) into real-world medical research applications.
