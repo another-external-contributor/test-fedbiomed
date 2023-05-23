@@ -1,6 +1,9 @@
 name: FBM-build-test
 run-name: FBM-build-test
-on: [push]
+on: 
+  push:
+    branches: 
+      - develop
 permissions:
   checks: write 
 jobs:
