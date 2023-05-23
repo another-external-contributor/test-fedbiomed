@@ -10,28 +10,28 @@ on:
       - gui/**
       - notebooks/**
       - tests/**
-  pull_request_target:
-    branches:
-      - develop
-    types:
-      - opened
+    pull_request:
+      types:
+        - opened
+      branches:
+        - master
   
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'push' || github.event.pull_request.opened == true }}
-    steps:
-    - name: Checkout to repositort
-      uses: actions/checkout@v3
-    
-    - name: Setup python
-      uses: actions/setup-python@v4
-      with:
-          python-version: '3.11' 
+  jobs:
+    build:
+      runs-on: ubuntu-latest
+      if: ${{ github.event_name == 'push' || github.event.pull_request.opened == true }}
+      steps:
+      - name: Checkout to repositort
+        uses: actions/checkout@v3
+      
+      - name: Setup python
+        uses: actions/setup-python@v4
+        with:
+            python-version: '3.11' 
 
-    - name: Install Dependencies
-      run: pip install -r envs/development/docs-requirements.txt
+      - name: Install Dependencies
+        run: pip install -r envs/development/docs-requirements.txt
 
 
-    - name: Build documentation
-      run: scripts/docs/fedbiomed_doc.sh --build-dir build-repo --build-main
+      - name: Build documentation
+        run: scripts/docs/fedbiomed_doc.sh --build-dir build-repo --build-main
