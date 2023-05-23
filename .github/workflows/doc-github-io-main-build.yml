@@ -1,4 +1,4 @@
-name: Publsih changes in pushed to master
+name: Publish MASTER fedbiomed/fedbiomed.github.io
 on:
   push:
     branches:
@@ -6,7 +6,7 @@ on:
     
 jobs:
   build-doc:
-    name: Build and Re-store/Upadate Documentation
+    name: Publish main in fedbioemd/fedbiomed.github.io repository
     environment: fedbiomed.github.io
     runs-on: ubuntu-latest
     steps:

@@ -1,4 +1,4 @@
-name: Publsih changes in pushed to master
+name: Publish changes in pushed to master
 on:
   push:
     branches:
