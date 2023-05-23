@@ -1,6 +1,9 @@
 name: FBM-build-test
 run-name: FBM-build-test
-on: [push]
+on: 
+  push:
+    branches: 
+      - develop
 permissions:
   checks: write 
 jobs:
@@ -29,7 +32,7 @@ jobs:
         uses: dorny/test-reporter@v1
         if: always()
         with:
+          artifact: test-results
           name: JEST Tests            # Name of the check run which will be created
           path: nosetests.xml    # Path to test results
-          reporter: java-junit    
-
+          reporter: java-junit
