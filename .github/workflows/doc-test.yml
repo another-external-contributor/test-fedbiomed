@@ -47,7 +47,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: paths-filter
     # if: ${{ github.event_name == 'push' || github.event.pull_request.opened == true }}
-    if: ${{ needs.paths-filter.outputs.is_doc_related_file_changed == true && ( github.event_name == 'push' && || github.event.pull_request.opened == true ) }} 
+    if: ${{ needs.paths-filter.outputs.is_doc_related_file_changed == true && ( github.event_name == 'push' || github.event.pull_request.opened == true ) }} 
     steps:
       - name: Checkout to repository
         uses: actions/checkout@v3
