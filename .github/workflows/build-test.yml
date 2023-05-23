@@ -21,16 +21,10 @@ jobs:
         run: |
           source $HOME/.zprofile
           source $HOME/.zshrc  
-          ./scripts/fedbiomed_run network stop
-      
+          ./scripts/fedbiomed_run network stop      
       - name: XUnit Viewer
         env:
           RESULTS_PATH: ./nosetests.xml
         id: xunit-viewer
         uses: AutoModality/action-xunit-viewer@v1  
-      - name: Attach the report
-        uses: actions/upload-artifact@v1
-        with:
-           name: ${{ steps.xunit-viewer.outputs.report-name }}
-           path: ${{ steps.xunit-viewer.outputs.report-dir }}
 
