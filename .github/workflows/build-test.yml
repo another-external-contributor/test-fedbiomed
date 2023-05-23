@@ -1,6 +1,8 @@
 name: FBM-build-test
 run-name: FBM-build-test
 on: [push]
+permissions:
+  checks: write 
 jobs:
   build-test:
     runs-on: [self-hosted, macOS]
