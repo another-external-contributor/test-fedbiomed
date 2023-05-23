@@ -18,11 +18,13 @@ jobs:
           source $HOME/.zshrc
           PYTHONPATH=${PYTHONPATH:-$PWD} conda run -n fedbiomed-researcher nosetests -w tests --cover-xml --cover-erase --with-coverage --cover-package=fedbiomed --with-xunit -v --process-restartworker
       - name: FBM_Shutdown
+        if: always()
         run: |
           source $HOME/.zprofile
           source $HOME/.zshrc  
           ./scripts/fedbiomed_run network stop      
       - name: XUnit Viewer
+        if: always()
         env:
           RESULTS_PATH: ./nosetests.xml
         id: xunit-viewer
