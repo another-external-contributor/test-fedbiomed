@@ -6,7 +6,7 @@ on:
     
 jobs:
   build-doc:
-    name: Build and Re-store/Upadate Documentation
+    name: Publish main documentation
     environment: github-pages
     runs-on: ubuntu-latest
     steps:

@@ -9,14 +9,14 @@ on:
     
 jobs:
   build-doc:
-    name: Build and Re-store/Upadate Documentation
+    name: Publish version in documentation
     environment: github-pages
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout to repositort
+      - name: Checkout to repository
         uses: actions/checkout@v3
       
-      - name: Checkout tools repo
+      - name: Checkout to fedbiomed/docs (storage)
         uses: actions/checkout@v3
         with:
           repository: fedbiomed/docs
