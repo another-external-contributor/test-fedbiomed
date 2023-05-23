@@ -25,7 +25,7 @@ jobs:
       with:
         base: ${{ github.ref }}
         filters: |
-          docs: &shared
+          docs: &docs
             - 'fedbiomed/**'
             - 'scripts/docs/**'
             - 'docs/**'
