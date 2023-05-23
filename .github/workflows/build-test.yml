@@ -23,10 +23,11 @@ jobs:
           source $HOME/.zprofile
           source $HOME/.zshrc  
           ./scripts/fedbiomed_run network stop      
-      - name: XUnit Viewer
+      - name: Test Reporter
+        uses: dorny/test-reporter@v1
         if: always()
-        env:
-          RESULTS_PATH: ./nosetests.xml
-        id: xunit-viewer
-        uses: AutoModality/action-xunit-viewer@v1  
+        with:
+          name: JEST Tests            # Name of the check run which will be created
+          path: nosetests.xml    # Path to test results
+          reporter: jest-junit    
 
