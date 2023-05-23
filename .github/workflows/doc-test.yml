@@ -1,14 +1,17 @@
 name: Documentation Build Test
 on:
-  - push
-  - pull_request:
-      types:
-        - opened
-        - merged
+  push:
+    branches:
+      - 'feature/*'
+      
+  pull_request:
+    types:
+      - opened
+      - merged
 
-      branches:
-        - master
-        - develop
+    branches:
+      - master
+      - develop
 
 jobs:
   paths-filter:
