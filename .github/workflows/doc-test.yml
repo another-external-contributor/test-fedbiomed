@@ -1,29 +1,52 @@
 name: Documentation Build Test
 on:
-  push:
-    paths-ignore:
-      - README.md
-      - CHANGELOG.md # Should never be edited anyway
-      - .gitignore
-      - .github/**
-      - envs/vpn/**
-      - gui/**
-      - notebooks/**
-      - tests/**
   pull_request:
       types:
         - opened
+        - merged
+
       branches:
         - master
         - develop
 
 jobs:
+
+  paths-filter:
+    runs-on: ubuntu-latest
+    outputs:
+      is_doc_related_file_changed: ${{ steps.filter.outputs.docs }}
+    steps:
+    - uses: actions/checkout@v2
+    - uses: dorny/paths-filter@v2
+      id: filter
+      with:
+        filters: |
+          docs:
+            - 'fedbiomed/**'
+            - 'scripts/docs/**'
+            - 'docs/**'
+            - 'envs/development/**'
+            - 'mkdocs.yml'
+            - 'README.md'
+    # run only if 'workflows' files were changed
+    - name: Test changes
+      if: steps.filter.outputs.docs == 'true'
+      run: echo true
+
+    # run only if not 'workflows' files were changed
+    - name: not workflow tests
+      if: steps.filter.outputs.docs != 'true'
+      run: echo false
+
+
   build:
     name: Testing build of documentation
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'push' || github.event.pull_request.opened == true }}
+    needs: paths-filter
+    # if: ${{ github.event_name == 'push' || github.event.pull_request.opened == true }}
+    if: needs.paths-filter.outputs.is_doc_related_file_changed == 'true'
     steps:
-      - name: Checkout to repositort
+      - name: Checkout to repository
         uses: actions/checkout@v3
     
       - name: Setup python
