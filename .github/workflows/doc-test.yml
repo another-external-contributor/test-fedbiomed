@@ -2,12 +2,13 @@ name: Documentation Build Test
 on:
   push:
     branches:
+      - master
+      - develop
       - 'feature/*'
       
   pull_request:
     types:
       - opened
-      - merged
 
     branches:
       - master
@@ -15,16 +16,19 @@ on:
 
 jobs:
   paths-filter:
+    # Job to see merge reqeust contains changes related to documentation
+    # If so, the job `build-doc` will be triggerred, if not `build-doc` 
+    # will be skipped 
     name: filter-docs-related-file-changes
     runs-on: ubuntu-latest
     outputs:
       is_doc_related_file_changed: ${{ steps.filter.outputs.docs }}
+    if: ${{ github.event_name == 'push' || github.event.pull_request.opened == 'true' }} 
     steps:
     - uses: actions/checkout@v2
     - uses: dorny/paths-filter@v2
       id: filter
       with:
-        base: ${{ github.ref }}
         filters: |
           docs: &docs
             - 'fedbiomed/**'
@@ -33,15 +37,9 @@ jobs:
             - 'envs/development/**'
             - 'mkdocs.yml'
             - 'README.md'
-          addedOrModified:
-            - added|modified: '**'
-          allChanges: 
-            - added|deleted|modified: '**'
-          addedOrModifiedAnchors:
-            - added|modified: *docs
 
     # run only if 'workflows' files were changed
-    - name: Display docs related changes changes
+    - name: Changes related to docs
       if: steps.filter.outputs.docs == 'true'
       run: echo true
 
@@ -51,12 +49,15 @@ jobs:
       run: echo false
 
 
-  build:
+  build-doc:
     name: test-documentation-build
     runs-on: ubuntu-latest
     needs: paths-filter
     # if: ${{ github.event_name == 'push' || github.event.pull_request.opened == true }}
-    if: ${{ needs.paths-filter.outputs.is_doc_related_file_changed == 'true' && ( github.event_name == 'push' || github.event.pull_request.opened == 'true' ) }} 
+    if: | 
+      needs.paths-filter.outputs.is_doc_related_file_changed == 'true' && 
+      ( github.event_name == 'push' || github.event.pull_request.opened == 'true' )
+    
     steps:
       - name: Checkout to repository
         uses: actions/checkout@v3
@@ -70,4 +71,5 @@ jobs:
         run: pip install -r envs/development/docs-requirements.txt
 
       - name: Build documentation
-        run: scripts/docs/fedbiomed_doc.sh --build-dir build-repo --build-main
+        # Version number for testing purposes should respect to standart which is vMajor.Minor.Patch 
+        run: scripts/docs/fedbiomed_doc.sh --build-dir build-repo --build-main --build-current-as v1.0.1 
