@@ -31,7 +31,7 @@ jobs:
       id: filter
       with:
         filters: |
-          docs: &docs
+          docs:
             - 'fedbiomed/**'
             - 'scripts/docs/**'
             - 'docs/**'
