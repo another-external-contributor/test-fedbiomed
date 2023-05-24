@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       is_doc_related_file_changed: ${{ steps.filter.outputs.docs }}
-    if: ${{ github.event_name == 'push' || github.event.pull_request.opened == 'true' ) }} 
+    if: ${{ github.event_name == 'push' || github.event.pull_request.opened == 'true' }} 
     steps:
     - uses: actions/checkout@v2
     - uses: dorny/paths-filter@v2
