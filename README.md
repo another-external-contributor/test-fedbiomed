@@ -6,9 +6,7 @@ push test
 
 Another update
 
->>> A small change for merge request
->>> A small change for merge request
->>> A small change for merge request
+[![Publish MASTER fedbiomed/fedbiomed.github.io](https://github.com/fedbiomed/test-fedbiomed/actions/workflows/doc-github-io-main-build.yml/badge.svg?branch=master&event=push)](https://github.com/fedbiomed/test-fedbiomed/actions/workflows/doc-github-io-main-build.yml)
 
 
 
