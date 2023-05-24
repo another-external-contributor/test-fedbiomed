@@ -1,3 +1,5 @@
+[![Documentation](https://github.com/fedbiomed/test-fedbiomed/actions/workflows/doc-github-io-main-build.yml/badge.svg?branch=master&event=push)](https://github.com/fedbiomed/test-fedbiomed/actions/workflows/doc-github-io-main-build.yml)
+
 # Fed-BioMed
 
 version 4 implementation of the Fed-BioMed project
@@ -6,7 +8,6 @@ push test
 
 Another update
 
-[![Publish MASTER fedbiomed/fedbiomed.github.io](https://github.com/fedbiomed/test-fedbiomed/actions/workflows/doc-github-io-main-build.yml/badge.svg?branch=master&event=push)](https://github.com/fedbiomed/test-fedbiomed/actions/workflows/doc-github-io-main-build.yml)
 
 
 
