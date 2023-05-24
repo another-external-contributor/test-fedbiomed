@@ -1,13 +1,12 @@
 name: Documentation Build Test
-on:
-  push:
-    branches:
-      - 'feature/*'
-      - 'hotfix/*'
-      
+on:   
   pull_request:
     types:
       - opened
+      - synchronize
+      - reopened
+      - closed
+      - assigned 
 
     branches:
       - master
@@ -22,9 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       is_doc_related_file_changed: ${{ steps.filter.outputs.docs }}
-    if: |
-      ( ( github.event_name == 'push' || github.event.pull_request.opened == 'true' ) || 
-      github.event.pull_request.opened == 'true' )
+
     steps:
     - uses: actions/checkout@v2
     - uses: dorny/paths-filter@v2
@@ -56,10 +53,7 @@ jobs:
     needs: paths-filter
     # if: ${{ github.event_name == 'push' || github.event.pull_request.opened == true }}
     if: | 
-      needs.paths-filter.outputs.is_doc_related_file_changed == 'true' && 
-      ( ( github.event_name == 'push' && github.event.pull_request.opened == 'true' ) || 
-      github.event.pull_request.opened == 'true' )
-  
+      needs.paths-filter.outputs.is_doc_related_file_changed == 'true'
     steps:
       - name: Checkout to repository
         uses: actions/checkout@v3
