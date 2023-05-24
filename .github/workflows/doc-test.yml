@@ -35,12 +35,6 @@ jobs:
             - 'envs/development/**'
             - 'mkdocs.yml'
             - 'README.md'
-          addedOrModified:
-            - added|modified: '**'
-          allChanges: 
-            - added|deleted|modified: '**'
-          addedOrModifiedAnchors:
-            - added|modified: *docs
 
     # run only if 'workflows' files were changed
     - name: Changes related to docs
