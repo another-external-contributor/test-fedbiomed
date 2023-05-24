@@ -1,14 +1,13 @@
 name: Documentation Build Test
-on:
-  push:
-    branches:
-      - master
-      - develop
-      - 'feature/*'
-      
+on:   
   pull_request:
     types:
       - opened
+      - synchronize
+      - reopened
+      - closed
+      - assigned 
+      - ready-for-review
 
     branches:
       - master
@@ -23,14 +22,14 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       is_doc_related_file_changed: ${{ steps.filter.outputs.docs }}
-    if: ${{ github.event_name == 'push' || github.event.pull_request.opened == 'true' }} 
+    if: github.event.pull_request.draft == false
     steps:
     - uses: actions/checkout@v2
     - uses: dorny/paths-filter@v2
       id: filter
       with:
         filters: |
-          docs: &docs
+          docs:
             - 'fedbiomed/**'
             - 'scripts/docs/**'
             - 'docs/**'
@@ -55,9 +54,7 @@ jobs:
     needs: paths-filter
     # if: ${{ github.event_name == 'push' || github.event.pull_request.opened == true }}
     if: | 
-      needs.paths-filter.outputs.is_doc_related_file_changed == 'true' && 
-      ( github.event_name == 'push' || github.event.pull_request.opened == 'true' )
-    
+      ( github.event.pull_request.draft == false && needs.paths-filter.outputs.is_doc_related_file_changed == 'true' )
     steps:
       - name: Checkout to repository
         uses: actions/checkout@v3
