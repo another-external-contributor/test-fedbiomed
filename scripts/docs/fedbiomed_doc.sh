@@ -7,7 +7,6 @@
 
 BASEDIR=$(cd $(dirname $0)/../.. || exit ; pwd)
 
-exit 1
 
 help () {
 
