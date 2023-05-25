@@ -29,6 +29,14 @@ jobs:
         run: |
           pwd
           ls -laR ./nosetests.xml
+      - name: Test Reporter
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          artifact: test-results
+          name: JEST Tests            # Name of the check run which will be created
+          path: $GITHUB_WORKSPACE/nosetests.xml    # Path to test results
+          reporter: java-junit
       - name: FBM_Shutdown
         if: always()
         run: |
@@ -38,11 +46,4 @@ jobs:
           source $HOME/.zprofile
           source $HOME/.zshrc  
           ./scripts/fedbiomed_run network stop      
-      - name: Test Reporter
-        uses: dorny/test-reporter@v1
-        if: always()
-        with:
-          artifact: test-results
-          name: JEST Tests            # Name of the check run which will be created
-          path: nosetests.xml    # Path to test results
-          reporter: java-junit
+
