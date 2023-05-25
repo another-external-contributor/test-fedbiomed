@@ -13,21 +13,26 @@ jobs:
       - uses: actions/checkout@v3
       - name: FBM_App_Setup
         run: |
+          pwd
           source $HOME/.zprofile
           source $HOME/.zshrc
           ./scripts/configure_conda researcher network
           ./scripts/fedbiomed_run network
       - name: FBM_Tests  
         run: |
+          pwd
           source $HOME/.zprofile
           source $HOME/.zshrc
           PYTHONPATH=${PYTHONPATH:-$PWD} conda run -n fedbiomed-researcher nosetests -w tests --cover-xml --cover-erase --with-coverage --cover-package=fedbiomed --with-xunit -v --process-restartworker
       - name: searching nosetests.xml
+        if: always()
         run: |
+          pwd
           ls -laR ./nosetests.xml
       - name: FBM_Shutdown
         if: always()
         run: |
+          pwd
           source $HOME/.zprofile
           source $HOME/.zshrc  
           ./scripts/fedbiomed_run network stop      
@@ -37,5 +42,5 @@ jobs:
         with:
           artifact: test-results
           name: JEST Tests            # Name of the check run which will be created
-          path: nosetests.xml    # Path to test results
+          path: ./nosetests.xml    # Path to test results
           reporter: java-junit
