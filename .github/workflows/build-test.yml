@@ -22,7 +22,9 @@ jobs:
           source $HOME/.zprofile
           source $HOME/.zshrc
           PYTHONPATH=${PYTHONPATH:-$PWD} conda run -n fedbiomed-researcher nosetests -w tests --cover-xml --cover-erase --with-coverage --cover-package=fedbiomed --with-xunit -v --process-restartworker
-          ls -la ./nosetests.xml
+      - name: searching nosetests.xml
+        run: |
+          ls -laR ./nosetests.xml
       - name: FBM_Shutdown
         if: always()
         run: |
