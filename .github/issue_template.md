@@ -2,7 +2,7 @@
 name: Open a new issue
 about: For
 title: '[Candidate]'
-labels: 'candidate'
+labels: candidate
 assignees: ''
 
 ---
