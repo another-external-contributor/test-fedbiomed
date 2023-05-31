@@ -2,7 +2,7 @@
 name: 'bug'
 about: 'File a bug/issue'
 title: '[BUG] <title>'
-labels: candidate
+labels: 'candidate'
 assignees: ''
 
 ---
