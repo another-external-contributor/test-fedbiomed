@@ -1,7 +1,7 @@
 ---
 name: issue
 about: File a bug/issue
-title: ''
+title: 'title'
 labels: 'candidate'
 assignees: ''
 
