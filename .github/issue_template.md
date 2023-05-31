@@ -1,6 +1,6 @@
 ---
-name: issue
-about: File a bug/issue
+name: 'issue'
+about: 'File a bug/issue'
 title: 'title'
 labels: 'candidate'
 assignees: ''
