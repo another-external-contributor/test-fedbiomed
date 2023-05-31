@@ -1,11 +1,15 @@
 ---
-name: Open a new issue
-title: "[Candidate]"
-labels: candidate
+name: 🐞 Bug
+about: File a bug/issue
+title: '[BUG] <title>'
+labels: Bug, Needs Triage
 assignees: ''
 
 ---
 
-Dear user, welcome to the Fed-BioMed project !
+<!--
+Note: Please search to see if an issue already exists for the bug you encountered.
+-->
 
- *Please keep the `candidate` label when creating your issue: this help us to tag your issue appropriately. We will get back to you as soon as possible !*
+### Current Behavior:
+<!-- A concise description of what you're experiencing. -->
