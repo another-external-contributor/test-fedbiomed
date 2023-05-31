@@ -1,5 +1,5 @@
 ---
-name: Open a new issue
+name: Open
 about: For
 title: '[Candidate]'
 labels: candidate
