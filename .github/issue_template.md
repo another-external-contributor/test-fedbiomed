@@ -1,15 +1,12 @@
 ---
-name: "bug report"
-about: File a bug/issue
-title: '[BUG] <title>'
+name: "Open a new issue"
+about: "For reporting a bug, proposing a new feature, enhancing an existing one, asking
+  a question, ..."
+title: ''
 labels: candidate
 assignees: ''
 
 ---
+Dear user, welcome to the Fed-BioMed project !
 
-<!--
-Note: Please search to see if an issue already exists for the bug you encountered.
--->
-
-### Current Behavior:
-<!-- A concise description of what you're experiencing. -->
+ *Please keep the `candidate` label when creating your issue: this help us to tag your issue appropriately. We will get back to you as soon as possible !
