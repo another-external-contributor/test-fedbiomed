@@ -1,8 +1,8 @@
 ---
-name: 🐞 Bug
+name: "bug report"
 about: File a bug/issue
 title: '[BUG] <title>'
-labels: Bug, Needs Triage
+labels: candidate
 assignees: ''
 
 ---
