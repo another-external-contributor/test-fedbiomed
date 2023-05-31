@@ -15,7 +15,7 @@ body:
   - type: checkboxes
     id: terms
     attributes:
-      label: [Definition Of Done](https://example.com) and [Coding Rules](https://example.com)
+      label: "[Definition Of Done](https://example.com) and [Coding Rules](https://example.com)"
       description: By submitting this issue, you agree to follow our [Definition Of Done](https://example.com) and our [Coding Rules](https://example.com)
       options:
         - label: I agree to follow this project's Definition Of Done and Coding Rules
