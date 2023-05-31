@@ -40,15 +40,3 @@ Specific to some cases:
 * update all conda envs consistently (`development` and `vpn`, Linux and MacOS)
 * if modified researcher (eg new attributes in classes) check if breakpoint needs update (`breakpoint`/`load_breakpoint` in `Experiment()`, `save_state`/`load_state` in aggregators, strategies, secagg, etc.)
 * if modified a component with versioning (config files, breakpoint, messaging protocol) then update the version following the rules in `common/utils/_versions.py`
-
----
-body:
-  - type: checkboxes
-    id: terms
-    attributes:
-      label: "Definition Of Done and Coding Rules"
-      description: By submitting this issue, you agree to follow our [Definition Of Done](https://example.com) and our [Coding Rules](https://example.com)
-      options:
-        - label: I agree to follow this project's Definition Of Done and Coding Rules
-          required: true
----
