@@ -1,8 +1,8 @@
 ---
-name: Open
-about: For
+name: 'Open'
+about: 'For'
 title: '[Candidate]'
-labels: candidate
+labels: 'candidate'
 assignees: ''
 
 ---
