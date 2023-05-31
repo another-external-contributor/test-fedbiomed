@@ -6,9 +6,6 @@ title: "[Candidate]: "
 labels: candidate
 assignees: ''
 body:
-  - type: markdown
-    attributes:
-      value: 'Dear user, welcome to the Fed-BioMed project ! '
   - type: textarea
     id: what-happened
     attributes:
@@ -18,11 +15,3 @@ body:
       value: "A bug happened!"
     validations:
       required: true
-  - type: checkboxes
-    id: terms
-    attributes:
-      label: Contributing
-      description: By submitting this issue, you agree to follow our [Definition Of Done](https://example.com)
-      options:
-        - label: I agree to follow this project's [Definition Of Done](https://example.com)
-          required: true
