@@ -1,6 +1,6 @@
 ---
 name: issue
-about: For reporting a bug, proposing a new feature, enhancing an existing one, asking a question, ...
+about: File a bug/issue
 title: ''
 labels: 'candidate'
 assignees: ''
