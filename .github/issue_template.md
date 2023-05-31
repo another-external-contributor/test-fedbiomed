@@ -1,8 +1,7 @@
 ---
 name: Open a new issue
-about: For reporting a bug, proposing a new feature, enhancing an existing one, asking
-  a question, ...
-title: "[Candidate]"
+about: For
+title: '[Candidate]'
 labels: 'candidate'
 assignees: ''
 
