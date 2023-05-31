@@ -1,6 +1,6 @@
 ---
-name: "Open a new issue"
-about: ""
+name: "bug report"
+about: File a bug/issue
 title: '[BUG] <title>'
 labels: candidate
 assignees: ''
