@@ -2,7 +2,7 @@
 name: issue
 about: File a bug/issue
 title: 'title'
-labels: candidate
+labels: 'candidate'
 assignees: ''
 
 ---
