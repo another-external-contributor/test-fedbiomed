@@ -1,8 +1,9 @@
 ---
-name: 'issue'
-about: 'File a bug/issue'
-title: 'title'
-labels: 'candidate'
+name: Open a new issue
+about: For reporting a bug, proposing a new feature, enhancing an existing one, asking
+  a question, ...
+title: "[Candidate]"
+labels: candidate
 assignees: ''
 
 ---
